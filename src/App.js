@@ -4,6 +4,7 @@ import { Route,Router,Routes } from 'react-router-dom';
 import Contribute from './components/contribute';
 import Html_contribute from './components/html_contribute';
 import Button_components from './components/button_components';
+//import FullScreenDropArea from './components/sample';
 function App() {
   return (
     <div className="App">
@@ -13,6 +14,7 @@ function App() {
         <Route path='/user_page' element = {<Contribute/>} />
         <Route path='/html_page' element = {<Html_contribute/>} />
         <Route path='/components' element = {<Button_components/>} />
+        
         
         
       </Routes>
