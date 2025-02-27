@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toWords } from "number-to-words";
 function Button_components() {
     let [l, set_l] = useState(1);
-    let [comp, set_comp] = useState([]);
+    let [comp, set_comp] = useState([]); //components
     let [droppedComponents, setDroppedComponents] = useState([]);
     let [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     let [draggingIndex, setDraggingIndex] = useState(null);
@@ -14,21 +14,213 @@ function Button_components() {
     let [css_code,set_css_code] = useState("");
     let [isMinimized, setIsMinimized] = useState(false);
 
+    
+
+    
+
+
     useEffect(() => {
         async function t() {
-            let op = await fetch("http://localhost:8000/fetch_all", {
+            let buttons = await fetch("http://localhost:8000/fetch_all_buttons", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
 
-            let rrgh = await op.json();
+            let rrgh = await buttons.json();
+
+
             set_comp([...rrgh.data]);
             set_l(0);
         }
         t();
     }, []);
+
+    let get_buttons = async ()=>{
+        set_l(1);
+        let buttons = await fetch("http://localhost:8000/fetch_all_buttons", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await buttons.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+
+    }
+
+    let get_accordian = async ()=>{
+
+        set_l(1);
+        let accordian = await fetch("http://localhost:8000/fetch_all_accordian", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await accordian.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+
+    }
+
+    let get_alerts = async () =>{
+        set_l(1);
+        let alert = await fetch("http://localhost:8000/fetch_all_alert", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await alert.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+    }
+
+    let get_badges = async ()=>{
+
+        set_l(1);
+        let badge = await fetch("http://localhost:8000/fetch_all_badge", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await badge.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+
+    }
+
+    let get_button_grp = async ()=>{
+        set_l(1);
+        let btngrp = await fetch("http://localhost:8000/fetch_all_button_group", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await btngrp.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+    }
+
+    let get_cards = async()=>{
+        set_l(1);
+        let card = await fetch("http://localhost:8000/fetch_all_card", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await card.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+    }
+
+    let get_carousel = async ()=>{
+        set_l(1);
+        let carousel = await fetch("http://localhost:8000/fetch_all_carousel", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await carousel.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+    }
+
+    let get_collapse = async()=>{
+
+        set_l(1);
+        let collapse = await fetch("http://localhost:8000/fetch_all_collapse", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await collapse.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+
+    }
+
+    let get_dropdown = async () =>{
+        set_l(1);
+        let dropdown = await fetch("http://localhost:8000/fetch_all_dropdown", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await dropdown.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+    }
+
+    let get_list_group = async ()=>{
+        set_l(1);
+        let list_grp  = await fetch("http://localhost:8000/fetch_all_list_grp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await list_grp.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+    }
+
+    let get_nav_bar = async ()=>{
+
+        set_l(1);
+        let navbar  = await fetch("http://localhost:8000/fetch_all_navbar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        let rrgh = await navbar.json();
+
+
+        set_comp([...rrgh.data]);
+        set_l(0);
+
+    }
 
     const handleDragStart = (e, data, m ,k,index = null) => {
         const rect = e.target.getBoundingClientRect();
@@ -134,7 +326,11 @@ function Button_components() {
                         Drag components here to add them to the canvas.
                     </p>
                 )}
-                {droppedComponents.map((comp, index) => (
+                {droppedComponents.map((comp, index) => {
+
+                    console.log(comp);
+
+                    return(
                     <div
                         key={index}
                         draggable
@@ -149,14 +345,25 @@ function Button_components() {
                         <style>{comp.css_code}</style>
                         <div dangerouslySetInnerHTML={{ __html: comp.html_code }} />
                     </div>
-                ))}
+                );})}
             </div>
 
             {!isMinimized && (
                 <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "20px", alignSelf: "start" }}>
+                    <button onClick={get_buttons}>buttons</button>
+                    <button onClick={get_accordian}>Accordion</button>
+                    <button onClick={get_alerts}>Alerts</button>
+                    <button onClick={get_badges}>badge</button>
+                    <button onClick={get_button_grp}>Button Group</button>
+                    <button onClick={get_cards}>Cards</button>
+                    <button onClick={get_carousel}>Carousel</button>
+                    <button onClick={get_collapse}>Collapse</button>
+                    <button onClick={get_dropdown}>Dropdowns</button>
+                    <button onClick={get_list_group}>List Group</button>
+                    <button onClick={get_nav_bar}>Navbar</button>
                     <h3 style={{ gridColumn: "span 2", textAlign: "center" }}>Draggable Components</h3>
                     {comp.map((index, val) => {
-                        const iframeSrcDoc = `
+                        let iframeSrcDoc = `
                             <html>
                             <head>
                                 <style>${index.css_code}</style>
@@ -166,6 +373,62 @@ function Button_components() {
                             </body>
                             </html>
                         `;
+
+                        if(index.bootstrap_css_used == "true"){
+                            iframeSrcDoc = `
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>${index.css_code}</style>
+        </head>
+        <body>
+            ${index.html_code}
+        </body>
+        </html>
+    `;
+                        }
+
+                        if(index.bootstrap_js_used == "true"){
+                            iframeSrcDoc = `
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            
+            <style>${index.css_code}</style>
+        </head>
+        <body>
+            ${index.html_code}
+
+            <!-- Bootstrap JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        </body>
+        </html>
+    `;
+                        }
+
+                        if(index.bootstrap_css_used == "true" && index.bootstrap_js_used == "true"){
+                            iframeSrcDoc = `
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>${index.css_code}</style>
+        </head>
+        <body>
+            ${index.html_code}
+
+            <!-- Bootstrap JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        </body>
+        </html>
+    `;
+                        }
+                        console.log(index);
+                        console.log(iframeSrcDoc);
 
                         return (
                             <div
@@ -184,14 +447,13 @@ function Button_components() {
             <div style={{
     position: "fixed",
     right: "0",
-    top: "50%",
-    transform: "translateY(-50%)",
+    top: "0",  // Move it to the top
     display: "flex",
     flexDirection: "column",
     gap: "10px",
     background: "#333",
     padding: "10px",
-    borderRadius: "10px 0 0 10px",
+    borderRadius: "0 0 0 10px", // Adjust border-radius for top-right alignment
     boxShadow: "-2px 0 5px rgba(0,0,0,0.2)"
 }}>
     <button onClick={() => setIsMinimized(!isMinimized)} 
@@ -205,6 +467,9 @@ function Button_components() {
         ⬇️
     </button>
 </div>
+
+
+
 
 
         </div>
