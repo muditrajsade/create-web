@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.17.1",
     "axios": "^1.7.9",
+    "grapesjs": "^0.22.5",
+    "grapesjs-preset-webpage": "^1.0.3",
     "lucide-react": "^0.476.0",
     "number-to-words": "^1.2.4",
     "react": "^19.0.0",
