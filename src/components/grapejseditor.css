@@ -1,0 +1,8 @@
+/* src/grapesjs-custom.css */
+.gjs-pn-panels, .gjs-pn-options, .gjs-pn-views {
+    background-color: lightblue !important;
+}
+
+.gjs-editor {
+    background-color: #f0f8ff !important; /* Light blue-ish background */
+}

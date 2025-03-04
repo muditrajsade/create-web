@@ -3,7 +3,7 @@ import grapesjs from "grapesjs";
 import "grapesjs/dist/css/grapes.min.css";
 import { useLocation } from "react-router-dom";
 
-
+//import "./grapejseditor.css";
 const GrapesEditor = ({pagename,b}) => {
     let editorRef = useRef(null);
     let [loading, setLoading] = useState(true);
@@ -121,6 +121,21 @@ const GrapesEditor = ({pagename,b}) => {
             });
 
             editorRef.current = editor;
+
+            editor.Panels.addButton("options", {
+                id: "get-html-css",
+                className: "fa fa-save", // Updated icon
+                command: "get-html-css",
+                attributes: { title: "Get HTML & CSS" },
+            });
+            
+
+            // ✅ Define the command to get HTML & CSS
+            editor.Commands.add("get-html-css", {
+                run: (editor) => {
+                    b(editorRef.current.getHtml(),editorRef.current.getCss());
+                },
+            });
             const blockManager = editor.BlockManager;
 
             // ✅ Get existing categories from already added blocks
@@ -335,7 +350,7 @@ const GrapesEditor = ({pagename,b}) => {
                     background: "#f4f4f4",
                     borderRight: "2px solid #ddd",
                     overflowY: "auto",
-                    height: "600px",
+                    height: "100vh",
                     position: "relative",
                 }}
             >
@@ -352,19 +367,11 @@ const GrapesEditor = ({pagename,b}) => {
             </div>
 
             {/* ✅ GrapesJS Main Editor */}
-            <div id="gjs" style={{ flex: 1 }}></div>
+            <div id="gjs" style={{ flex: 1, height: "100vh"}}></div>
 
-            <button
-    onClick={() => {
-        if (editorRef.current) {
+
+
             
-            b(editorRef.current.getHtml(),editorRef.current.getCss());
-        }
-    }}
-    style={{ margin: "10px", padding: "8px", background: "blue", color: "white", border: "none", cursor: "pointer" }}
->
-    Get HTML & CSS
-</button>
 
         </div>
     );
