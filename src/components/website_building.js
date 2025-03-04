@@ -1,29 +1,22 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import GrapesEditor from "./drag_drop";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { useLocation } from "react-router-dom";
-import { CircularProgress, Box } from "@mui/material";
+import { CircularProgress, Box, Button, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-function Build_project(){
 
-    let [v,set_v] = useState("");
+function Build_project() {
+    let [v, set_v] = useState("");
     let n = useNavigate();
-
-    let [a,set_a] = useState(2);
-
-    let [pages,set_pages] = useState([]);
-
-    let [d,set_d] = useState("");
-    let [current_pg,set_current_pg] = useState(0);
-    let [received_htnl,set_received_html] = useState([]);
-    let [received_css,set_css] = useState([]);
-
+    let [a, set_a] = useState(2);
+    let [pages, set_pages] = useState([]);
+    let [d, set_d] = useState("");
+    let [current_pg, set_current_pg] = useState(0);
+    let [received_htnl, set_received_html] = useState([]);
+    let [received_css, set_css] = useState([]);
     const location = useLocation();
     const [user, setuser] = useState("");
-
-
-    
 
     useEffect(() => {
         if (location.state && location.state.user) {
@@ -31,8 +24,7 @@ function Build_project(){
         }
     }, [location]);
 
-
-    let func = (html,css)=>{
+    let func = (html, css) => {
         set_a(0);
         let iimnb = [...received_htnl];
         iimnb[current_pg] = html;
@@ -40,25 +32,21 @@ function Build_project(){
         cssil[current_pg] = css;
         set_received_html([...iimnb]);
         set_css([...cssil]);
+    };
 
-    }
-
-    const saveProject = async() => {
+    const saveProject = async () => {
         set_a(5);
         const zip = new JSZip();
-
         let cde = [];
-        let p=[];
-    
+        let p = [];
+
         pages.forEach((pageName, index) => {
             const htmlContent = received_htnl[index] || "";
             const cssContent = received_css[index] || "";
-    
-            // Bootstrap CDN links
+
             const bootstrapCSS = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">`;
             const bootstrapJS = `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>`;
-    
-            // Complete HTML document
+
             const fullHtml = `
               <html>
                 <head>
@@ -76,32 +64,25 @@ function Build_project(){
 
             cde.push(fullHtml);
             p.push(pageName);
-    
-            // Add file to ZIP
             zip.file(`${pageName}.html`, fullHtml);
         });
-    
-        // Generate ZIP and trigger download
+
         await zip.generateAsync({ type: "blob" }).then((content) => {
             saveAs(content, "MyWebsite.zip");
         });
 
-        let op = await fetch('http://localhost:8000/post_project',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({codes:[...cde],pages:[...p],email:user.email,project_title:v}),
-            }
-        );
-        n("/customer",{state:{user:user}});
+        await fetch("http://localhost:8000/post_project", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ codes: [...cde], pages: [...p], email: user.email, project_title: v }),
+        });
 
+        n("/customer", { state: { user: user } });
     };
 
-    if(a==5){
+    if (a === 5) {
         return (
-            <Box 
+            <Box
                 sx={{
                     display: "flex",
                     justifyContent: "center",
@@ -109,131 +90,125 @@ function Build_project(){
                     height: "100vh",
                 }}
             >
-                {loading && <CircularProgress />}
+                <CircularProgress />
             </Box>
         );
     }
 
-    if(a==3){
-        return(
-            <GrapesEditor pagename={pages[current_pg]} b={func} />
-            
-        );
+    if (a === 3) {
+        return <GrapesEditor pagename={pages[current_pg]} b={func} />;
     }
 
-    if(a == 2){
+    if (a === 2) {
         return (
-            <div>
-                <input type="text" value = {v} onChange={(e)=>{
-                    set_v(e.target.value);
-                }} />
-                <button onClick={()=>{
-                    set_a(0);
-                }}>SUBMIT</button>
-
-            </div>
+            <Box sx={{ textAlign: "center", mt: 4 }}>
+                <TextField 
+                    label="Project Title" 
+                    variant="outlined" 
+                    value={v} 
+                    onChange={(e) => set_v(e.target.value)} 
+                    sx={{ mb: 2, width: "50%" }} 
+                />
+                <Box>
+                    <Button variant="contained" color="primary" onClick={() => set_a(0)}>
+                        Submit
+                    </Button>
+                </Box>
+            </Box>
         );
     }
 
-    if(a == 1){
+    if (a === 1) {
         return (
-            <div>
+            <Box sx={{ textAlign: "center", mt: 4 }}>
+                <Typography variant="h5">Build Your Webpage</Typography>
+                <Typography variant="h6">{v}</Typography>
+                
+                {pages.map((i, v) => (
+                    <Typography key={v} sx={{ mt: 1 }}>{i}</Typography>
+                ))}
 
-            <p>BUILD YOUR WEBPAGE</p>
+                <TextField 
+                    label="Page Name" 
+                    variant="outlined" 
+                    value={d} 
+                    onChange={(e) => set_d(e.target.value)} 
+                    sx={{ mt: 2, mb: 2, width: "50%" }} 
+                />
 
-            <p>{v}</p>
-            {
-                [...pages].map((i,v)=>{
-                    return (
-                        <div key={v}>
-                            <p>{i}</p>
-                        </div>
-                    );
-                })
-            }
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+                    <Button variant="contained" color="primary" onClick={() => {
+                        set_pages([...pages, d]);
+                        set_d("");
+                        set_a(0);
+                        set_received_html([...received_htnl, ""]);
+                        set_css([...received_css, ""]);
+                    }}>
+                        Add Page
+                    </Button>
 
-            <input type="text"  value={d} onChange={(e)=>{set_d(e.target.value)}} />
-
-            <button onClick={()=>{
-                set_pages([...pages,d]);
-                set_d("");
-                set_a(0);
-                set_received_html([...received_htnl,""]);
-                set_css([...received_css,""]);
-            }}>ADD PAGE</button>
-            <button onClick={()=>{
-                set_d("");
-                set_a(0);
-            }}>CANCEL</button>
-
-
-
-
-
-
-
-
-            </div>
+                    <Button variant="outlined" color="secondary" onClick={() => set_a(0)}>
+                        Cancel
+                    </Button>
+                </Box>
+            </Box>
         );
     }
-
 
     return (
-        <div>
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+            <Typography variant="h5">Build Your Webpage</Typography>
+            <Typography variant="h6">{v}</Typography>
 
-            <p>BUILD YOUR WEBPAGE</p>
-            <p>{v}</p>
-            {
-                [...pages].map((i,v)=>{
-                    return (
-                        <div key={v}>
-                            <p>{i}</p>
-                            <button onClick={()=>{set_a(3); set_current_pg(v)}} >DESIGN</button>
-                            <button onClick={() => {
-    const htmlContent = received_htnl[v] || ""; // Get HTML content
-    const cssContent = received_css[v] || "";   // Get CSS content
+            {pages.map((i, v) => (
+                <Box key={v} sx={{ mt: 2, display: "flex", justifyContent: "center", gap: 2 }}>
+                    <Typography>{i}</Typography>
 
-    // Bootstrap CDN links
-    const bootstrapCSS = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">`;
-    const bootstrapJS = `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>`;
+                    <Button variant="contained" color="primary" onClick={() => { set_a(3); set_current_pg(v); }}>
+                        Design
+                    </Button>
 
-    // Complete HTML document
-    const fullHtml = `
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          ${bootstrapCSS}
-          <style>${cssContent}</style>
-        </head>
-        <body>
-          ${htmlContent}
-          ${bootstrapJS}
-        </body>
-      </html>
-    `;
+                    <Button variant="outlined" color="secondary" onClick={() => {
+                        const htmlContent = received_htnl[v] || "";
+                        const cssContent = received_css[v] || "";
+                        const bootstrapCSS = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">`;
+                        const bootstrapJS = `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>`;
 
-    // Open a new tab and write the content
-    const previewWindow = window.open("", "_blank");
-    previewWindow.document.open();
-    previewWindow.document.write(fullHtml);
-    previewWindow.document.close();
-  }}>PREVIEW</button>
+                        const fullHtml = `
+                          <html>
+                            <head>
+                              <meta charset="UTF-8">
+                              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                              ${bootstrapCSS}
+                              <style>${cssContent}</style>
+                            </head>
+                            <body>
+                              ${htmlContent}
+                              ${bootstrapJS}
+                            </body>
+                          </html>
+                        `;
 
-                        </div>
-                    );
-                })
-            }
-            
+                        const previewWindow = window.open("", "_blank");
+                        previewWindow.document.open();
+                        previewWindow.document.write(fullHtml);
+                        previewWindow.document.close();
+                    }}>
+                        Preview
+                    </Button>
+                </Box>
+            ))}
 
-            <button onClick={()=>{
-                set_a(1);
-            }}>ADD PAGE</button>
-            <button onClick={saveProject}>SAVE PROJECT</button>
+            <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: 2 }}>
+                <Button variant="contained" color="primary" onClick={() => set_a(1)}>
+                    Add Page
+                </Button>
 
-
-
-        </div>
+                <Button variant="contained" color="success" onClick={saveProject}>
+                    Save Project
+                </Button>
+            </Box>
+        </Box>
     );
 }
 

@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Box, Typography, Avatar, Drawer, List, ListItem, ListItemText, Button } from "@mui/material";
+import { Card, CardContent, CardActions } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import { CircularProgress} from "@mui/material";
 function CustomerPage() {
     let navigate = useNavigate();
     let [user, setUser] = useState(null);
     let [openPanel, setOpenPanel] = useState(false);
     let location = useLocation();
-    let [page,set_pages] = useState([]);
-    let [codes,set_codes] = useState([]);
-    let [proj_titles,set_proj_titles] = useState([]);
+    let [projects,set_projects] = useState([]);
+
+    let [abd,set_abd] = useState(0);
+
     
 
 
     useEffect(() => {
-            if (location.state && location.state.user) {
-                setUser(location.state.user);
-            }
-
+            
 
             async function get_projects(){
+                console.log("hello");
+                console.log(location.state.user);
+                setUser(location.state.user);
 
                 let op = await fetch('http://localhost:8000/fetch_projects',
                     {
@@ -31,6 +34,12 @@ function CustomerPage() {
                     }
                 );
 
+                let fvgh = await op.json();
+                console.log(fvgh.data);
+
+                set_projects(fvgh.data);
+                set_abd(1);
+
 
 
 
@@ -38,9 +47,9 @@ function CustomerPage() {
             }
 
             get_projects();
-        }, [location]);
+        }, []);
 
-    //if (!user) return null;
+    if (!user) return null;
 
     return (
         <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
@@ -66,6 +75,7 @@ function CustomerPage() {
                             />
                         </Box>
                     </Box>
+                    
                 </Toolbar>
             </AppBar>
 
@@ -101,6 +111,44 @@ function CustomerPage() {
                     </List>
                 </Box>
             </Drawer>
+
+            
+
+            <Box sx={{ 
+    display: "flex", 
+    flexWrap: "wrap", 
+    justifyContent: "center", 
+    gap: 3, 
+    padding: 2 
+}}>
+    {projects.map((project, index) => (
+        <Card key={index} sx={{ 
+            width: 250,  // Fixed width for each card
+            padding: "10px", 
+            borderRadius: "16px", 
+            boxShadow: 3, 
+            textAlign: "center"
+        }}>
+            <CardContent>
+                <Typography variant="h6" fontWeight="bold">
+                    {project.project_title}
+                </Typography>
+            </CardContent>
+            <CardActions>
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    fullWidth
+                    onClick={() => {}}
+                >
+                    Click Me
+                </Button>
+            </CardActions>
+        </Card>
+    ))}
+</Box>
+
+
         </Box>
     );
 }

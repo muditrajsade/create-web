@@ -24,7 +24,7 @@ function LoginPage() {
                             //localStorage.setItem("user", JSON.stringify(user));
 
                             // Redirect to Customer Page
-                            navigate("/customer",{ state: { user:JSON.stringify(user) } });
+                            navigate("/customer",{ state: { user:user } });
                         })
                         .catch(error => console.error("Error fetching user info:", error));
                 },
