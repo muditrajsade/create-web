@@ -37,6 +37,7 @@ function HomePage() {
     };
 
     let nav = ()=>{
+        n("/login");
       
     }
 
