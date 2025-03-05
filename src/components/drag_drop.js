@@ -321,6 +321,7 @@ const GrapesEditor = ({pagename,b}) => {
                             content: {
                                 type: "Collapse component", 
                                 components: card.html_code, 
+                                styles: card.css_code,
                                 draggable: true,
                                 selectable: true,
                                 copyable: true,
@@ -342,6 +343,7 @@ const GrapesEditor = ({pagename,b}) => {
                             content: {
                                 type: "Nav Bar", 
                                 components: card.html_code, 
+                                styles: card.css_code,
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
@@ -363,6 +365,7 @@ const GrapesEditor = ({pagename,b}) => {
                             content: {
                                 type: "Nav Bar", 
                                 components: card.html_code,
+                                styles: card.css_code,
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
@@ -385,6 +388,7 @@ const GrapesEditor = ({pagename,b}) => {
                             content: {
                                 type: "Card", 
                                 components: card_data.html_code, 
+                                styles: card_data.css_code,
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
@@ -406,7 +410,8 @@ const GrapesEditor = ({pagename,b}) => {
                             category: "Drop Downs",
                             content: {
                                 type: "drodown", 
-                                components: card.html_code, 
+                                components: card.html_code,
+                                styles: card.css_code,
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
@@ -428,7 +433,8 @@ const GrapesEditor = ({pagename,b}) => {
                             category: "List Group",
                             content: {
                                 type: "List group", 
-                                components: card.html_code, 
+                                components: card.html_code,
+                                styles: card.css_code, 
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
@@ -450,7 +456,8 @@ const GrapesEditor = ({pagename,b}) => {
                             category: "Alerts",
                             content: {
                                 type: "Alerts", 
-                                components: card.html_code, 
+                                components: card.html_code,
+                                styles: card.css_code, 
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
@@ -472,7 +479,8 @@ const GrapesEditor = ({pagename,b}) => {
                             category: "Badge",
                             content: {
                                 type: "Badge", 
-                                components: card.html_code, 
+                                components: card.html_code,
+                                styles: card.css_code,
                                 draggable: true, 
                                 selectable: true, 
                                 copyable: true, 
