@@ -107,6 +107,22 @@ const GrapesEditor = ({pagename,b}) => {
                 width: "100%",
                 height: "600px",
                 storageManager: false,
+                styleManager: {
+                    sectors: [
+                      {
+                        name: 'Typography',
+                        open: true,
+                        buildProps: ['color', 'font-size', 'font-family', 'text-align'],
+                        properties: [
+                          {
+                            property: 'color',
+                            type: 'color',
+                            defaults: 'black',
+                          },
+                        ],
+                      },
+                    ],
+                  },
                 
                 plugins: ["gjs-preset-webpage"],
                 pluginsOpts: { "gjs-preset-webpage": {} },
@@ -124,6 +140,33 @@ const GrapesEditor = ({pagename,b}) => {
 
             editorRef.current = editor;
 
+            editor.DomComponents.addType("custom-div", {
+                model: {
+                  defaults: {
+                    tagName: "div",
+                    draggable: true,
+                    droppable: true,
+                    attributes: { class: "custom-div" },
+                    styles: `
+                      width: 300px;
+                      height: 200px;
+                      padding: 10px;
+                      border: 2px dashed #ccc;
+                      background-color: #f9f9f9;
+                      position: relative;
+                    `,
+                    resizable: {
+                      tl: 1, tr: 1, bl: 1, br: 1, cl: 1, cr: 1, tc: 1, bc: 1,
+                    },
+                    highlightable: true, // Enables selection/highlight
+                    traits: [
+                      { type: "text", label: "ID", name: "id" },
+                      { type: "text", label: "Class", name: "class" },
+                    ],
+                  },
+                },
+              });
+              
             editor.Panels.addButton("options", {
                 id: "get-html-css",
                 className: "fa fa-save", // Updated icon
@@ -212,7 +255,37 @@ const GrapesEditor = ({pagename,b}) => {
                     editable: true, // Makes it editable in the canvas
                 },
             });
-            
+
+            editor.BlockManager.add("plain-text", {
+                label: "Plain Text",
+                category: "Plain text",
+                content: {
+                    tagName: "span", // Using 'span' to avoid block-level box
+                    type: "text",
+                    content: "Double-click to edit...",
+                    style: {
+                        "display": "inline",
+                        "font-size": "16px",
+                        "color": "#000",
+                    },
+                    editable: true, // Makes it editable directly
+                },
+            });
+
+            editor.BlockManager.add("div-box", {
+                label: "Div Box",
+                category: "Containers",
+                attributes: { class: "fa fa-square" },
+                content: { type: "custom-div" },
+              });
+
+              
+              const compType = editor.Components.getType("custom-div");
+              if (compType) {
+                compType.model.prototype.defaults.resizable = {
+                  tl: 1, tr: 1, bl: 1, br: 1, cl: 1, cr: 1, tc: 1, bc: 1,
+                };
+              }
 
             /** ✅ Ensure "Buttons" category exists & add buttons */
             if (!existingCategories.has("Buttons")) {
