@@ -175,7 +175,7 @@ const GrapesEditor = ({pagename,b}) => {
 
             editor.Panels.addButton("options", {
                 id: "color-picker",
-                className: "fa fa-paint-brush", 
+                className: "fa fa-border", 
                 attributes: { title: "Change Background Color" },
                 active: false,
     
