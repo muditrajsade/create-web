@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 
 function FullScreenDropArea() {
     const [isDragging, setIsDragging] = useState(false);
-    const [components, setComponents] = useState([]); // Components from API
-    const [droppedComponents, setDroppedComponents] = useState([]); // Dropped components
+    const [components, setComponents] = useState([]); 
+    const [droppedComponents, setDroppedComponents] = useState([]); 
     const [showComponents, setShowComponents] = useState(false);
-    const [boxPosition, setBoxPosition] = useState({ x: 20, y: 80 }); // Draggable box position
+    const [boxPosition, setBoxPosition] = useState({ x: 20, y: 80 }); 
     const [isDraggingBox, setIsDraggingBox] = useState(false);
     const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
 
-    // Fetch components from API on mount
+    
     useEffect(() => {
         async function fetchComponents() {
             let response = await fetch("http://localhost:8000/fetch_all", {
@@ -18,17 +18,16 @@ function FullScreenDropArea() {
             });
 
             let data = await response.json();
-            setComponents([...data.data]); // Assuming API returns an array of components
+            setComponents([...data.data]); 
         }
         fetchComponents();
     }, []);
 
-    // Handle Drag Start
     const handleDragStart = (e, component) => {
         e.dataTransfer.setData("component", JSON.stringify(component));
     };
 
-    // Handle Drop
+
     const handleDrop = (e) => {
         e.preventDefault();
         setIsDragging(false);
@@ -40,13 +39,13 @@ function FullScreenDropArea() {
         }
     };
 
-    // Handle Mouse Down on Draggable Box
+    
     const handleMouseDown = (e) => {
         setIsDraggingBox(true);
         setStartPosition({ x: e.clientX - boxPosition.x, y: e.clientY - boxPosition.y });
     };
 
-    // Handle Mouse Move (Dragging)
+    
     const handleMouseMove = (e) => {
         if (isDraggingBox) {
             setBoxPosition({
@@ -56,7 +55,7 @@ function FullScreenDropArea() {
         }
     };
 
-    // Handle Mouse Up (Stop Dragging)
+    
     const handleMouseUp = () => {
         setIsDraggingBox(false);
     };
@@ -88,7 +87,7 @@ function FullScreenDropArea() {
         >
             <p>Drag & Drop components here</p>
 
-            {/* Show Components Button - Hidden when box is visible */}
+            
             {!showComponents && (
                 <button
                     onClick={() => setShowComponents(true)}
@@ -105,7 +104,7 @@ function FullScreenDropArea() {
                 </button>
             )}
 
-            {/* Draggable Components Box */}
+            
             {showComponents && (
                 <div
                     style={{
@@ -121,7 +120,7 @@ function FullScreenDropArea() {
                     }}
                     onMouseDown={handleMouseDown}
                 >
-                    {/* Close Button */}
+                    
                     <button
                         onClick={() => setShowComponents(false)}
                         style={{
@@ -161,7 +160,7 @@ function FullScreenDropArea() {
                 </div>
             )}
 
-            {/* Display Dropped Components */}
+           
             {droppedComponents.length > 0 && (
                 <div
                     style={{

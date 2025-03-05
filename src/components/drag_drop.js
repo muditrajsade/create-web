@@ -3,7 +3,6 @@ import grapesjs from "grapesjs";
 import "grapesjs/dist/css/grapes.min.css";
 import { useLocation } from "react-router-dom";
 
-//import "./grapejseditor.css";
 const GrapesEditor = ({pagename,b}) => {
     let editorRef = useRef(null);
     let [loading, setLoading] = useState(true);
@@ -24,7 +23,7 @@ const GrapesEditor = ({pagename,b}) => {
     const [webpageCode, setWebpageCode] = useState({ html: "", css: "" });
 
 
-    /** ✅ Fetch Buttons & Accordions Before Loading Editor */
+    
     useEffect(() => {
         const fetchComponents = async () => {
             try {
@@ -98,7 +97,7 @@ const GrapesEditor = ({pagename,b}) => {
         fetchComponents();
     }, []);
 
-    /** ✅ Initialize GrapesJS After Fetching Components */
+
     useEffect(() => {
         if (!loading && buttonsData.length > 0 && collapse_comp.length > 0 && nav_bar.length> 0 && button_group.length>0 && card.length>0 && dropdown.length>0 && listgrp.length>0 && alert.length>0 && badge.length && !editorRef.current) {
             const editor = grapesjs.init({
@@ -158,7 +157,7 @@ const GrapesEditor = ({pagename,b}) => {
                     resizable: {
                       tl: 1, tr: 1, bl: 1, br: 1, cl: 1, cr: 1, tc: 1, bc: 1,
                     },
-                    highlightable: true, // Enables selection/highlight
+                    highlightable: true, 
                     traits: [
                       { type: "text", label: "ID", name: "id" },
                       { type: "text", label: "Class", name: "class" },
@@ -169,18 +168,18 @@ const GrapesEditor = ({pagename,b}) => {
               
             editor.Panels.addButton("options", {
                 id: "get-html-css",
-                className: "fa fa-save", // Updated icon
+                className: "fa fa-save", 
                 command: "get-html-css",
                 attributes: { title: "Get HTML & CSS" },
             });
 
             editor.Panels.addButton("options", {
                 id: "color-picker",
-                className: "fa fa-paint-brush", // 🎨 Icon for color
+                className: "fa fa-paint-brush", 
                 attributes: { title: "Change Background Color" },
                 active: false,
     
-                // When the button is clicked, show the color picker
+               
                 command: "open-color-picker",
             });
 
@@ -192,7 +191,7 @@ const GrapesEditor = ({pagename,b}) => {
                         return;
                     }
     
-                    // Create a color input dynamically
+                   
                     let colorInput = document.getElementById("color-input");
                     if (!colorInput) {
                         colorInput = document.createElement("input");
@@ -206,10 +205,10 @@ const GrapesEditor = ({pagename,b}) => {
                         document.body.appendChild(colorInput);
                     }
     
-                    // Show the color picker
+                   
                     colorInput.click();
     
-                    // Handle color change
+                    
                     colorInput.oninput = (event) => {
                         const newColor = event.target.value;
                         selectedComponent.addStyle({ "background-color": newColor });
@@ -221,7 +220,7 @@ const GrapesEditor = ({pagename,b}) => {
               
             
 
-            // ✅ Define the command to get HTML & CSS
+            
             editor.Commands.add("get-html-css", {
                 run: (editor) => {
                     b(editorRef.current.getHtml(),editorRef.current.getCss());
@@ -232,7 +231,7 @@ const GrapesEditor = ({pagename,b}) => {
             
             const blockManager = editor.BlockManager;
 
-            // ✅ Get existing categories from already added blocks
+           
             const existingCategories = new Set(
                 blockManager.getAll().map(block => block.attributes.category)
             );
@@ -252,7 +251,7 @@ const GrapesEditor = ({pagename,b}) => {
                         "display": "block",
                         "cursor": "text",
                     },
-                    editable: true, // Makes it editable in the canvas
+                    editable: true, 
                 },
             });
 
@@ -260,7 +259,7 @@ const GrapesEditor = ({pagename,b}) => {
                 label: "Plain Text",
                 category: "Plain text",
                 content: {
-                    tagName: "span", // Using 'span' to avoid block-level box
+                    tagName: "span", 
                     type: "text",
                     content: "Double-click to edit...",
                     style: {
@@ -268,7 +267,7 @@ const GrapesEditor = ({pagename,b}) => {
                         "font-size": "16px",
                         "color": "#000",
                     },
-                    editable: true, // Makes it editable directly
+                    editable: true, 
                 },
             });
 
@@ -287,7 +286,7 @@ const GrapesEditor = ({pagename,b}) => {
                 };
               }
 
-            /** ✅ Ensure "Buttons" category exists & add buttons */
+            
             if (!existingCategories.has("Buttons")) {
                 buttonsData.forEach((button) => {
                     if (!blockManager.get(button.id)) {
@@ -300,7 +299,7 @@ const GrapesEditor = ({pagename,b}) => {
                 });
             }
 
-            /** ✅ Ensure "Accordion" category exists & add accordions */
+            
             if (!existingCategories.has("Collapse componenets")) {
                 collapse_comp.forEach((card) => {
                     if (!blockManager.get(card.id)) {
@@ -308,16 +307,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "Collapse componenets",
                             content: {
-                                type: "Collapse component", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "Collapse component", 
+                                components: card.html_code, 
+                                draggable: true,
+                                selectable: true,
+                                copyable: true,
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -329,16 +328,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "Nav Bar",
                             content: {
-                                type: "Nav Bar", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "Nav Bar", 
+                                components: card.html_code, 
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -350,16 +349,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "Button Group",
                             content: {
-                                type: "Nav Bar", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "Nav Bar", 
+                                components: card.html_code,
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -372,16 +371,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card_data.html_code}</div>`,
                             category: "Card",
                             content: {
-                                type: "Card", // Custom component type for Cards
-                                components: card_data.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "Card", 
+                                components: card_data.html_code, 
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -394,16 +393,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "Drop Downs",
                             content: {
-                                type: "drodown", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "drodown", 
+                                components: card.html_code, 
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -416,16 +415,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "List Group",
                             content: {
-                                type: "List group", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "List group", 
+                                components: card.html_code, 
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -438,16 +437,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "Alerts",
                             content: {
-                                type: "Alerts", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "Alerts", 
+                                components: card.html_code, 
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -460,16 +459,16 @@ const GrapesEditor = ({pagename,b}) => {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
                             category: "Badge",
                             content: {
-                                type: "Badge", // Custom component type for Cards
-                                components: card.html_code, // Use stored card HTML
-                                draggable: true, // Allow dragging the entire card
-                                selectable: true, // Select the whole card
-                                copyable: true, // Enable copy-paste
-                                attributes: { class: "gjs-no-select" }, // Prevents separate selection of child elements
-                                removable: true, // Allow card removal
-                                stylable: true, // Allow styling in editor
+                                type: "Badge", 
+                                components: card.html_code, 
+                                draggable: true, 
+                                selectable: true, 
+                                copyable: true, 
+                                attributes: { class: "gjs-no-select" },
+                                removable: true, 
+                                stylable: true, 
                             },
-                            wrapper: true, // Ensures it's treated as a single unit
+                            wrapper: true, 
                         });
                     }
                 });
@@ -493,7 +492,7 @@ const GrapesEditor = ({pagename,b}) => {
 
     return (
         <div style={{ display: "flex" }}>
-            {/* ✅ Block Panel */}
+            
             <div
                 id="blocks-panel"
                 style={{
@@ -508,7 +507,7 @@ const GrapesEditor = ({pagename,b}) => {
             >
                 <h4>Components</h4>
 
-                {/* ✅ Loading Spinner */}
+               
                 {loading && (
                     <div style={{ textAlign: "center", padding: "10px" }}>
                         <div className="spinner-border text-primary" role="status">
@@ -518,7 +517,7 @@ const GrapesEditor = ({pagename,b}) => {
                 )}
             </div>
 
-            {/* ✅ GrapesJS Main Editor */}
+           
             <div id="gjs" style={{ flex: 1, height: "100vh"}}></div>
 
             

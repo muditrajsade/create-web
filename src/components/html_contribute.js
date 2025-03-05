@@ -6,7 +6,7 @@ function Html_contribute() {
     let [load, set_load] = useState(0);
     let [bootstrap_css, set_bootstrap_css] = useState(false);
     let [bootstrap_js, set_bootstrap_js] = useState(false);
-    let [selectedComponent, setSelectedComponent] = useState(""); // Stores selected Bootstrap component
+    let [selectedComponent, setSelectedComponent] = useState(""); 
 
     const bootstrapComponents = [
         "Buttons", "Carousel", "Navbar", "Accordion", "Alerts", 

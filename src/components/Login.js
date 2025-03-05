@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // React Router for navigation
+import { useNavigate } from "react-router-dom"; 
 import { Button, Container, Typography, Box } from "@mui/material";
 import { Google, GitHub } from "@mui/icons-material";
 
@@ -14,16 +14,10 @@ function LoginPage() {
                 callback: (response) => {
                     console.log("Google Sign-In Response:", response);
 
-                    // Fetch user profile data
+                    
                     fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${response.access_token}`)
                         .then(res => res.json())
                         .then(user => {
-                            console.log("User Info:", user);
-                            
-                            // Save user info in localStorage (or Context API)
-                            //localStorage.setItem("user", JSON.stringify(user));
-
-                            // Redirect to Customer Page
                             navigate("/customer",{ state: { user:user } });
                         })
                         .catch(error => console.error("Error fetching user info:", error));

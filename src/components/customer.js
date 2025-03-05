@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppBar, Toolbar, Box, Typography, Avatar, Drawer, List, ListItem, ListItemText, Button } from "@mui/material";
+import { AppBar, Toolbar, Box, Typography, Avatar, Drawer, List, ListItem, ListItemText, Button,  Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Paper } from "@mui/material";
 import { Card, CardContent, CardActions } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { CircularProgress} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 function CustomerPage() {
     let navigate = useNavigate();
     let [user, setUser] = useState(null);
@@ -12,6 +16,8 @@ function CustomerPage() {
     let [projects,set_projects] = useState([]);
 
     let [abd,set_abd] = useState(1);
+
+    let [proj_No,set_proj_No] = useState(-1);
 
     
 
@@ -51,6 +57,56 @@ function CustomerPage() {
 
     if (!user) return null;
 
+    if(abd == 3){
+        return (
+            <Box sx={{ maxWidth: 600, mx: "auto", p: 3 }}>
+            {projects[proj_No].codes.map((value, index) => (
+                <Accordion key={index} sx={{ mb: 2 }}>
+                    
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ bgcolor: "#1976d2", color: "white" }}>
+                        <Typography fontWeight="bold">{projects[proj_No].pages[index]}</Typography>
+                    </AccordionSummary>
+
+                   
+                    <AccordionDetails>
+                        <Paper elevation={3} sx={{ p: 2, bgcolor: "#f5f5f5" }}>
+                            <Typography variant="body2" fontWeight="bold" color="textSecondary">
+                                CODE:
+                            </Typography>
+                            <Typography
+                                component="pre"
+                                sx={{
+                                    whiteSpace: "pre-wrap",
+                                    fontFamily: "monospace",
+                                    bgcolor: "#eee",
+                                    p: 2,
+                                    borderRadius: 1
+                                }}
+                            >
+                                {value}
+                            </Typography>
+                        </Paper>
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+
+           
+            <Button
+                variant="contained"
+                color="error"
+                fullWidth
+                sx={{ mt: 2 }}
+                onClick={() => {
+                    set_proj_No(-1);
+                    set_abd(0);
+                }}
+            >
+                GO BACK
+            </Button>
+        </Box>
+        );
+    }
+
     if(abd == 1){
         return(
             <Box sx={{ minHeight: "100vh", bgcolor: "#f5f5f5" }}>
@@ -61,12 +117,12 @@ function CustomerPage() {
                     </Typography>
                     
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        {/* Navigate to Build Page Button */}
+                       
                         <Button variant="contained" color="primary" onClick={() => navigate("/build", { state: { user: user } })}> 
                             Build Project
                         </Button>
 
-                        {/* Profile Image & Hover Email */}
+                        
                         <Box sx={{ position: "relative" }}>
                             <Avatar 
                                 src={user.picture} 
@@ -80,7 +136,7 @@ function CustomerPage() {
                 </Toolbar>
             </AppBar>
 
-            {/* Side Panel */}
+            
             <Drawer 
                 anchor="right" 
                 open={openPanel} 
@@ -141,12 +197,12 @@ function CustomerPage() {
                     </Typography>
                     
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        {/* Navigate to Build Page Button */}
+                      
                         <Button variant="contained" color="primary" onClick={() => navigate("/build", { state: { user: user } })}> 
                             Build Project
                         </Button>
 
-                        {/* Profile Image & Hover Email */}
+                       
                         <Box sx={{ position: "relative" }}>
                             <Avatar 
                                 src={user.picture} 
@@ -160,7 +216,7 @@ function CustomerPage() {
                 </Toolbar>
             </AppBar>
 
-            {/* Side Panel */}
+            
             <Drawer 
                 anchor="right" 
                 open={openPanel} 
@@ -204,7 +260,7 @@ function CustomerPage() {
 }}>
     {projects.map((project, index) => (
         <Card key={index} sx={{ 
-            width: 250,  // Fixed width for each card
+            width: 250, 
             padding: "10px", 
             borderRadius: "16px", 
             boxShadow: 3, 
@@ -220,7 +276,10 @@ function CustomerPage() {
                     variant="contained" 
                     color="primary" 
                     fullWidth
-                    onClick={() => {}}
+                    onClick={() => {
+                        set_abd(3);
+                        set_proj_No(index);
+                    }}
                 >
                     Click Me
                 </Button>
