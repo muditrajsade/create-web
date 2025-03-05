@@ -17,6 +17,7 @@ const GrapesEditor = ({pagename,b}) => {
     let [alert,set_alert] = useState([]);
     let [badge,set_badge] = useState([]);
     let [isEditorReady, setIsEditorReady] = useState(false);
+    const [selectedColor, setSelectedColor] = useState("#ffffff");
 
     
 
@@ -106,6 +107,7 @@ const GrapesEditor = ({pagename,b}) => {
                 width: "100%",
                 height: "600px",
                 storageManager: false,
+                
                 plugins: ["gjs-preset-webpage"],
                 pluginsOpts: { "gjs-preset-webpage": {} },
                 canvas: {
@@ -128,6 +130,52 @@ const GrapesEditor = ({pagename,b}) => {
                 command: "get-html-css",
                 attributes: { title: "Get HTML & CSS" },
             });
+
+            editor.Panels.addButton("options", {
+                id: "color-picker",
+                className: "fa fa-paint-brush", // 🎨 Icon for color
+                attributes: { title: "Change Background Color" },
+                active: false,
+    
+                // When the button is clicked, show the color picker
+                command: "open-color-picker",
+            });
+
+            editor.Commands.add("open-color-picker", {
+                run: (editor) => {
+                    const selectedComponent = editor.getSelected();
+                    if (!selectedComponent) {
+                        alert("Select a component first!");
+                        return;
+                    }
+    
+                    // Create a color input dynamically
+                    let colorInput = document.getElementById("color-input");
+                    if (!colorInput) {
+                        colorInput = document.createElement("input");
+                        colorInput.type = "color";
+                        colorInput.id = "color-input";
+                        colorInput.style.position = "absolute";
+                        colorInput.style.top = "50px";
+                        colorInput.style.left = "50px";
+                        colorInput.style.zIndex = "1000";
+                        colorInput.style.display = "none";
+                        document.body.appendChild(colorInput);
+                    }
+    
+                    // Show the color picker
+                    colorInput.click();
+    
+                    // Handle color change
+                    colorInput.oninput = (event) => {
+                        const newColor = event.target.value;
+                        selectedComponent.addStyle({ "background-color": newColor });
+                    };
+                },
+            });
+    
+
+              
             
 
             // ✅ Define the command to get HTML & CSS
@@ -136,12 +184,35 @@ const GrapesEditor = ({pagename,b}) => {
                     b(editorRef.current.getHtml(),editorRef.current.getCss());
                 },
             });
+
+            
+            
             const blockManager = editor.BlockManager;
 
             // ✅ Get existing categories from already added blocks
             const existingCategories = new Set(
                 blockManager.getAll().map(block => block.attributes.category)
             );
+
+            editor.BlockManager.add("text-box", {
+                label: "Text Box",
+                category: "TEXT BOX",
+                content: {
+                    tagName: "div",
+                    type: "text",
+                    content: "Double-click to edit...",
+                    attributes: { class: "text-box" },
+                    style: {
+                        "min-width": "200px",
+                        "padding": "10px",
+                        "border": "1px solid black",
+                        "display": "block",
+                        "cursor": "text",
+                    },
+                    editable: true, // Makes it editable in the canvas
+                },
+            });
+            
 
             /** ✅ Ensure "Buttons" category exists & add buttons */
             if (!existingCategories.has("Buttons")) {
@@ -339,6 +410,14 @@ const GrapesEditor = ({pagename,b}) => {
         }
     }, [loading, buttonsData, collapse_comp,nav_bar,button_group,card,dropdown,listgrp,alert,badge]);
 
+    const handleColorChange = (e) => {
+        const selected = editorRef.current.getSelected();
+        if (selected) {
+            selected.setStyle({ "background-color": e.target.value });
+            setSelectedColor(e.target.value);
+        }
+    };
+
     return (
         <div style={{ display: "flex" }}>
             {/* ✅ Block Panel */}
@@ -368,6 +447,8 @@ const GrapesEditor = ({pagename,b}) => {
 
             {/* ✅ GrapesJS Main Editor */}
             <div id="gjs" style={{ flex: 1, height: "100vh"}}></div>
+
+            
 
 
 
