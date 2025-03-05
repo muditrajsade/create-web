@@ -99,7 +99,7 @@ const GrapesEditor = ({pagename,b}) => {
 
 
     useEffect(() => {
-        if (!loading && buttonsData.length > 0 && collapse_comp.length > 0 && nav_bar.length> 0 && button_group.length>0 && card.length>0 && dropdown.length>0 && listgrp.length>0 && alert.length>0 && badge.length && !editorRef.current) {
+        if (!loading && buttonsData.length > 0 && collapse_comp.length > 0 && nav_bar.length> 0 && button_group.length>0 && card.length>0 && dropdown.length>0 && listgrp.length>0 && alert_comp.length>0 && badge.length && !editorRef.current) {
             const editor = grapesjs.init({
                 container: "#gjs",
                 fromElement: false,
@@ -293,7 +293,19 @@ const GrapesEditor = ({pagename,b}) => {
                         blockManager.add(button.id, {
                             label: `<div style="padding:20px;">${button.html_code}</div>`,
                             category: "Buttons",
-                            content: button.html_code,
+                            content: {
+                                type: "Button", 
+                                components: button.html_code,
+                                styles: button.css_code,
+                                draggable: true,
+                                selectable: true,
+                                copyable: true,
+                                attributes: { class: "gjs-no-select" }, 
+                                removable: true, 
+                                stylable: true, 
+
+                            },
+                            wrapper: true, 
                         });
                     }
                 });
@@ -480,7 +492,7 @@ const GrapesEditor = ({pagename,b}) => {
 
             setIsEditorReady(true);
         }
-    }, [loading, buttonsData, collapse_comp,nav_bar,button_group,card,dropdown,listgrp,alert,badge]);
+    }, [loading, buttonsData, collapse_comp,nav_bar,button_group,card,dropdown,listgrp,alert_comp,badge]);
 
     const handleColorChange = (e) => {
         const selected = editorRef.current.getSelected();
