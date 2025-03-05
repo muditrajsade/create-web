@@ -13,7 +13,7 @@ const GrapesEditor = ({pagename,b}) => {
     let [card,set_card] = useState([]);
     let [dropdown,set_dropdown] = useState([]);
     let [listgrp,set_listgrp] = useState([]);
-    let [alert,set_alert] = useState([]);
+    let [alert_comp,set_alert] = useState([]);
     let [badge,set_badge] = useState([]);
     let [isEditorReady, setIsEditorReady] = useState(false);
     const [selectedColor, setSelectedColor] = useState("#ffffff");
@@ -431,7 +431,7 @@ const GrapesEditor = ({pagename,b}) => {
             }
 
             if (!existingCategories.has("alerts")) {
-                alert.forEach((card) => {
+                alert_comp.forEach((card) => {
                     if (!blockManager.get(card.id)) {
                         blockManager.add(card.id, {
                             label: `<div style="padding:5px;">${card.html_code}</div>`,
