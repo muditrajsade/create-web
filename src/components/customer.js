@@ -64,7 +64,7 @@ function CustomerPage() {
                 <Accordion key={index} sx={{ mb: 2 }}>
                     
                     <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ bgcolor: "#1976d2", color: "white" }}>
-                        <Typography fontWeight="bold">{projects[proj_No].pages[index]}</Typography>
+                        <Typography fontWeight="bold">{projects[proj_No].pages[index]}.html</Typography>
                     </AccordionSummary>
 
                    
@@ -258,7 +258,8 @@ function CustomerPage() {
     gap: 3, 
     padding: 2 
 }}>
-    {projects.map((project, index) => (
+    {projects.length > 0 ? (
+    projects.map((project, index) => (
         <Card key={index} sx={{ 
             width: 250, 
             padding: "10px", 
@@ -285,7 +286,13 @@ function CustomerPage() {
                 </Button>
             </CardActions>
         </Card>
-    ))}
+    ))
+) : (
+    <Typography variant="h6" textAlign="center" mt={2}>
+        No projects available
+    </Typography>
+)}
+
 </Box>
 
 
