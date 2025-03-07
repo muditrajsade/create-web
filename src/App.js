@@ -4,7 +4,7 @@ import { Route,Router,Routes } from 'react-router-dom';
 import Contribute from './components/contribute';
 import Html_contribute from './components/html_contribute';
 import Button_components from './components/button_components';
-//import FullScreenDropArea from './components/sample';
+
 import GrapesEditor from './components/drag_drop';
 import HomePage from './components/Home';
 import LoginPage from './components/Login';

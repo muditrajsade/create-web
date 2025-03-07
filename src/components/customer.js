@@ -289,7 +289,7 @@ function CustomerPage() {
     ))
 ) : (
     <Typography variant="h6" textAlign="center" mt={2}>
-        No projects available
+        No projects
     </Typography>
 )}
 
