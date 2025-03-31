@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import grapesjs from "grapesjs";
 import "grapesjs/dist/css/grapes.min.css";
+import "grapesjs-preset-webpage";
 import { useLocation } from "react-router-dom";
 
 const Template_editor = ({pagename,b, t}) => {
@@ -141,13 +142,31 @@ const Template_editor = ({pagename,b, t}) => {
                 
                 blockManager: { appendTo: "#blocks-panel" },
                 dragMode: "absolute",
+                /*assetManager: {
+                    upload: "http://localhost:5000/upload", // Replace with your backend
+                    uploadName: "files",
+                    assets: [
+                      { src: "https://via.placeholder.com/150", type: "image" }, // Example image
+                    ],
+                    autoAdd: true, // Automatically add uploaded images
+                  },*/
 
                 
             });
 
+            const mergedCSS = `${t.css_code} 
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slide-in { from { transform: translateX(-100px); } to { transform: translateX(0); } }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  .fade-in { animation: fade-in 1s ease-in-out; }
+  .slide-in { animation: slide-in 1.5s ease-in-out; }
+  .bounce { animation: bounce 1.5s infinite; }
+`;
+
             editor.setComponents(t.html_code);
     
-            editor.setStyle(t.css_code);
+            editor.setStyle(mergedCSS);
 
             editor.getWrapper().set('style', {
                 height: '100%',
@@ -157,6 +176,64 @@ const Template_editor = ({pagename,b, t}) => {
               });
 
             editorRef.current = editor;
+            let styleManager = editor.StyleManager;
+
+
+            /*const animationCSS = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateX(-100px); } to { transform: translateX(0); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .fade-in { animation: fadeIn 1s ease-in-out; }
+        .slide-in { animation: slideIn 1.5s ease-in-out; }
+        .bounce { animation: bounce 1.5s infinite; }
+      `;
+            editor.setStyle(animationCSS);*/
+
+            styleManager.addSector("animations", {
+                name: "Animations",
+                open: false,
+                buildProps: ["animation-name", "animation-duration"],
+                properties: [
+                  {
+                    name: "Animation",
+                    property: "animation-name",
+                    type: "select",
+                    defaults: "none",
+                    options: [
+                      { value: "none", name: "None" },
+                      { value: "fade-in", name: "Fade In" },
+                      { value: "slide-in", name: "Slide In" },
+                      { value: "bounce", name: "Bounce" },
+                    ],
+                  },
+                  {
+                    name: "Duration",
+                    property: "animation-duration",
+                    type: "select",
+                    defaults: "1s",
+                    options: [
+                      { value: "0.5s", name: "0.5s" },
+                      { value: "1s", name: "1s" },
+                      { value: "2s", name: "2s" },
+                    ],
+                  },
+                ],
+              });
+
+              editor.on("component:selected", (component) => {
+                const animationName = component.getStyle()["animation-name"];
+                const animationDuration = component.getStyle()["animation-duration"] || "1s";
+        
+                // Remove old animation classes
+                component.removeClass("fade-in slide-in bounce");
+        
+                if (animationName && animationName !== "none") {
+                  component.addClass(animationName);
+                  component.addStyle({ animation: `${animationName} ${animationDuration} ease-in-out` });
+                }
+              });
+        
 
             editor.DomComponents.addType("custom-div", {
                 model: {
