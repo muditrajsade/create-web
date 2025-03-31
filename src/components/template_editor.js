@@ -151,6 +151,10 @@ const Template_editor = ({pagename,b, t}) => {
                     autoAdd: true, // Automatically add uploaded images
                   },*/
 
+                  
+
+                  
+
                 
             });
 
@@ -233,6 +237,10 @@ const Template_editor = ({pagename,b, t}) => {
                   component.addStyle({ animation: `${animationName} ${animationDuration} ease-in-out` });
                 }
               });
+
+             
+          
+              
         
 
             editor.DomComponents.addType("custom-div", {
@@ -268,6 +276,11 @@ const Template_editor = ({pagename,b, t}) => {
                 command: "get-html-css",
                 attributes: { title: "Get HTML & CSS" },
             });
+
+            
+
+            
+              
 
             editor.Panels.addButton("options", {
                 id: "color-picker",
