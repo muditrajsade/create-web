@@ -3,6 +3,8 @@ import grapesjs from "grapesjs";
 import "grapesjs/dist/css/grapes.min.css";
 import "grapesjs-preset-webpage";
 import { useLocation } from "react-router-dom";
+import { Upload } from "lucide-react";
+import Uploadwidget from "./uploadwidjet";
 
 const Template_editor = ({pagename,b, t}) => {
     let editorRef = useRef(null);
@@ -19,6 +21,7 @@ const Template_editor = ({pagename,b, t}) => {
     let [templates,set_templates] = useState([]);
     let [isEditorReady, setIsEditorReady] = useState(false);
     const [selectedColor, setSelectedColor] = useState("#ffffff");
+    let [img_var,set_img_var] = useState([]);
 
     
 
@@ -151,6 +154,38 @@ const Template_editor = ({pagename,b, t}) => {
                     autoAdd: true, // Automatically add uploaded images
                   },*/
 
+                 /* assetManager: {
+                    upload: 'http://localhost:3000/upload', // Your backend API
+                    uploadName: 'file', // Name of the file field (must match Multer's 'file')
+                    credentials: 'include', // Optional: If using authentication
+                    autoAdd: true, // Automatically adds uploaded images to assets
+                    headers: { 
+                      // Add any required headers here
+                    },
+                    // Handle response to match GrapesJS Asset Manager format
+                    uploadFile: function (e) {
+                      const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+                      const formData = new FormData();
+                      
+                      // Append only the first selected file
+                      if (files.length) {
+                        formData.append('file', files[0]); 
+                      }
+                
+                      fetch('http://localhost:8000/upload', {
+                        method: 'POST',
+                        body: formData
+                      })
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.data) {
+                          editor.AssetManager.add(data.data); // Adds images to Asset Manager
+                        }
+                      })
+                      .catch(err => console.error('Upload error:', err));
+                    }
+                  }*/
+
                   
 
                   
@@ -277,6 +312,19 @@ const Template_editor = ({pagename,b, t}) => {
                 attributes: { title: "Get HTML & CSS" },
             });
 
+            /*editor.Panels.addButton('options', {
+                id: 'upload-btn',
+                className: 'fa fa-upload', // Icon of the button
+                command: 'open-cloudinary', // Command to open the Asset Manager
+                attributes: { title: 'Open Asset Manager' },
+              });
+
+              //cloudinary  stuff
+
+              editor.Commands.add("open-cloudinary", {
+                run: () => openCloudinaryWidget(editor),
+              });*/
+
             
 
             
@@ -291,6 +339,25 @@ const Template_editor = ({pagename,b, t}) => {
                
                 command: "open-color-picker",
             });
+
+            /*editor.Panels.addButton('options', { 
+                id: 'open-assets-btn',
+                className: 'fa fa-image',
+                command: 'open-assets',
+                attributes: { title: 'View Uploaded Images' },
+              });
+              
+              editor.Commands.add('open-assets', {
+                run: (editor) => {
+                  const assets = editor.AssetManager.getAll(); // Get current assets
+                  if (!assets.length) {
+                    alert("No images uploaded yet!"); // Handle empty state
+                  } else {
+                    editor.runCommand('open-assets'); // Open Asset Manager
+                  }
+                }
+              });*/
+              
 
             editor.Commands.add("open-color-picker", {
                 run: (editor) => {
@@ -324,6 +391,35 @@ const Template_editor = ({pagename,b, t}) => {
                     };
                 },
             });
+
+            // Add a button to open the Asset Manager
+/*editor.Panels.addButton('options', { 
+    id: 'open-assets-btn',
+    className: 'fa fa-image',
+    command: 'open-assets',
+    attributes: { title: 'View Uploaded Images' },
+  });
+  
+  // Command to open Asset Manager and ensure images are visible
+  editor.Commands.add('open-assets', {
+    run: function (editor) {
+      const assetManager = editor.AssetManager;
+  
+      // Force opening the Asset Manager
+      assetManager.open();
+  
+      // Focus on the images tab if GrapesJS supports categories (some versions do)
+      if (assetManager.getCategories) {
+        const imagesCategory = assetManager.getCategories().filter(cat => cat.get('id') === 'images')[0];
+        if (imagesCategory) {
+          assetManager.setTargetCategory(imagesCategory);
+        }
+      }
+  
+      console.log("Opened Asset Manager with uploaded images");
+    }
+  });*/
+  
     
 
               
@@ -615,6 +711,8 @@ const Template_editor = ({pagename,b, t}) => {
         }
     }, [loading, buttonsData, collapse_comp,nav_bar,button_group,card,dropdown,listgrp,alert_comp,badge]);
 
+   
+
     
 
     const handleColorChange = (e) => {
@@ -654,6 +752,8 @@ const Template_editor = ({pagename,b, t}) => {
 
            
             <div id="gjs" style={{ flex: 1, height: "100vh"}}></div>
+
+            <Uploadwidget e={editorRef}/>
 
             
 
