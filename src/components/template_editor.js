@@ -3,7 +3,7 @@ import grapesjs from "grapesjs";
 import "grapesjs/dist/css/grapes.min.css";
 import { useLocation } from "react-router-dom";
 
-const GrapesEditor = ({pagename,b}) => {
+const Template_editor = ({pagename,b, t}) => {
     let editorRef = useRef(null);
     let [loading, setLoading] = useState(true);
     let [buttonsData, setButtonsData] = useState([]);
@@ -138,9 +138,23 @@ const GrapesEditor = ({pagename,b}) => {
                         "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
                     ],
                 },
+                
                 blockManager: { appendTo: "#blocks-panel" },
                 dragMode: "absolute",
+
+                
             });
+
+            editor.setComponents(t.html_code);
+    
+            editor.setStyle(t.css_code);
+
+            editor.getWrapper().set('style', {
+                height: '100%',
+                width: '100%',
+                margin: '0',
+                padding: '0',
+              });
 
             editorRef.current = editor;
 
@@ -501,6 +515,8 @@ const GrapesEditor = ({pagename,b}) => {
                 });
             }
 
+            
+
 
             
             
@@ -508,6 +524,8 @@ const GrapesEditor = ({pagename,b}) => {
             setIsEditorReady(true);
         }
     }, [loading, buttonsData, collapse_comp,nav_bar,button_group,card,dropdown,listgrp,alert_comp,badge]);
+
+    
 
     const handleColorChange = (e) => {
         const selected = editorRef.current.getSelected();
@@ -557,4 +575,4 @@ const GrapesEditor = ({pagename,b}) => {
     );
 };
 
-export default GrapesEditor;
+export default Template_editor;

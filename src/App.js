@@ -10,6 +10,7 @@ import HomePage from './components/Home';
 import LoginPage from './components/Login';
 import CustomerPage from './components/customer';
 import Build_project from './components/website_building';
+import T from './components/template';
 function App() {
   return (
     <div className="App">
@@ -21,6 +22,7 @@ function App() {
         <Route path='/components' element = {<Button_components/>} />
         <Route path='/component' element = {<GrapesEditor/>} />
         <Route path='/login' element = {<LoginPage/>} />
+        <Route path='/template' element = {<T/>} />
 
         <Route path="/customer" element={<CustomerPage />} />
         <Route path="/build" element={<Build_project />} />

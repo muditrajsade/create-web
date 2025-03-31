@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 import { useLocation } from "react-router-dom";
 import { CircularProgress, Box, Button, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Template_editor from "./template_editor";
 
 function Build_project() {
     let [v, set_v] = useState("");
@@ -17,6 +18,12 @@ function Build_project() {
     let [received_css, set_css] = useState([]);
     const location = useLocation();
     const [user, setuser] = useState("");
+    let [templates,set_templates] = useState([]);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    let [templ,set_templ] = useState(null);
+
+
 
     useEffect(() => {
         if (location.state && location.state.user) {
@@ -32,6 +39,19 @@ function Build_project() {
         cssil[current_pg] = css;
         set_received_html([...iimnb]);
         set_css([...cssil]);
+    };
+
+    const handleTemplateClick = (template) => {
+        set_templ(template);
+        set_a(7);
+        
+    };
+
+    const loadTemplate = () => {
+        /*if (selectedTemplate) {
+            editor.setComponents(selectedTemplate.html_code); // Load into GrapesJS
+        }
+        setShowModal(false);*/
     };
 
     const saveProject = async () => {
@@ -79,6 +99,62 @@ function Build_project() {
 
         n("/customer", { state: { user: user } });
     };
+
+    let choosetemplate = async()=>{
+        set_a(5);
+
+        let op = await fetch("http://localhost:8000/fetch_templates", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        });
+        console.log(op);
+        let template_data = await op.json();
+        set_templates([...template_data.data]);
+        set_a(10);
+
+    }
+
+    if(a==7){
+        return <Template_editor pagename={pages[current_pg]} b={func} t={templ} />;
+    }
+
+    if(a==10){
+        return (
+            <div className="templates-container">
+                <h2>Select a Template</h2>
+                <div className="templates-grid">
+                {templates.map((template, index) => (
+                    <div 
+                        key={index} 
+                        className="template-box" 
+                        
+                    >
+                        <iframe 
+                            title={`template-${index}`} 
+                            className="template-iframe"
+                            srcDoc={template.html_code} // Directly insert HTML
+                        />
+                        <button onClick={()=>handleTemplateClick(template)}>SELECT</button>
+                    </div>
+                ))}
+                </div>
+    
+                {showModal && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <p>Load this template in the editor?</p>
+                            <button onClick={loadTemplate}>Yes</button>
+                            <button onClick={() => setShowModal(false)}>No</button>
+                        </div>
+                    </div>
+                )}
+    
+               
+            </div>
+        );
+    }
+
+    
 
     if (a === 5) {
         return (
@@ -166,6 +242,9 @@ function Build_project() {
 
                     <Button variant="contained" color="primary" onClick={() => { set_a(3); set_current_pg(v); }}>
                         Design
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={choosetemplate}>
+                        Choose a template
                     </Button>
 
                     <Button variant="outlined" color="secondary" onClick={() => {
