@@ -273,6 +273,61 @@ const Template_editor = ({pagename,b, t}) => {
                 }
               });
 
+              editor.DomComponents.addType('image', {
+                model: {
+                  defaults: {
+                    tagName: 'img',
+                    attributes: { 
+                      src: '' // Example global URL
+                    },
+                    resizable: true,  // Enable resizing
+                    draggable: true,  // Allow dragging
+                    selectable: true, // Ensure selection is possible
+                    traits: [
+                      {
+                        type: 'text',
+                        label: 'Image URL',
+                        name: 'src',
+                        changeProp: 1
+                      }
+                    ]
+                  },
+                },
+                view: {
+                  events: {
+                    dblclick: function () {
+                      var newUrl = prompt("Enter new image URL:");
+                      if (newUrl) {
+                        this.model.set('attributes', { src: newUrl });
+                      }
+                    }
+                  }
+                }
+              });
+
+              function addImagesToEditor() {
+                // Loop through the array of image URLs
+                t.url.forEach((url) => {
+                  // Check if the image URL already exists in the editor (avoid duplication)
+                  const existingComponent = editor.getComponents().models.find(component => {
+                    const src = component.get('attributes').src;
+                    return src === url;
+                  });
+              
+                  // Only add the image if it's not already added
+                  if (!existingComponent) {
+                    // Add an image component to the editor
+                    editor.addComponents({
+                      type: 'image',
+                      src: url  // Dynamically assign the src to each image
+                    });
+                  }
+                });
+              }
+              // Step 5: Call the function to add images to the editor
+              addImagesToEditor();
+              
+
              
           
               
@@ -753,7 +808,7 @@ const Template_editor = ({pagename,b, t}) => {
            
             <div id="gjs" style={{ flex: 1, height: "100vh"}}></div>
 
-            <Uploadwidget e={editorRef}/>
+            
 
             
 
