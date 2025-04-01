@@ -193,6 +193,8 @@ const Template_editor = ({pagename,b, t}) => {
                 
             });
 
+            
+
             const mergedCSS = `${t.css_code} 
   @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes slide-in { from { transform: translateX(-100px); } to { transform: translateX(0); } }
@@ -213,6 +215,9 @@ const Template_editor = ({pagename,b, t}) => {
                 margin: '0',
                 padding: '0',
               });
+
+            editor.getConfig().forceClass = true;
+            editor.getConfig().clearStyles = false;
 
             editorRef.current = editor;
             let styleManager = editor.StyleManager;
