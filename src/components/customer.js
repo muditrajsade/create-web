@@ -8,6 +8,7 @@ import { Card, CardContent, CardActions } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { CircularProgress} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Html_contribute from "./html_contribute";
 function CustomerPage() {
     let navigate = useNavigate();
     let [user, setUser] = useState(null);
@@ -18,6 +19,8 @@ function CustomerPage() {
     let [abd,set_abd] = useState(1);
 
     let [proj_No,set_proj_No] = useState(-1);
+
+    let [contribute_state,set_contribute_state] = useState(0);
 
     
 
@@ -54,6 +57,24 @@ function CustomerPage() {
 
             get_projects();
         }, []);
+
+    let chng = ()=>{
+
+        set_contribute_state(0);
+
+    }
+
+    if(contribute_state == 2){
+        return (
+            <T b={chng}/>
+        );
+    }
+
+    if(contribute_state == 1){
+        return (
+            <Html_contribute f={chng}/>
+        );
+    }
 
     if (!user) return null;
 
@@ -151,10 +172,10 @@ function CustomerPage() {
                     </Typography>
                     <List>
                         <ListItem button>
-                            <ListItemText primary="History" />
+                            <ListItemText primary="Contribute Component"  onClick={()=>{set_contribute_state(1)}}/>
                         </ListItem>
                         <ListItem button>
-                            <ListItemText primary="Account Details" />
+                            <ListItemText primary="Contribute Template" onClick={()=>{set_contribute_state(2)}} />
                         </ListItem>
                         <ListItem button>
                             <ListItemText primary="Settings" />
