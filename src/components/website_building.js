@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 import { CircularProgress, Box, Button, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Template_editor from "./template_editor";
+import './builder.css';
 
 function Build_project() {
     let [v, set_v] = useState("");
@@ -118,6 +119,22 @@ function Build_project() {
         return <Template_editor pagename={pages[current_pg]} b={func} t={templ} />;
     }
 
+    const previewTemplate = (template) => {
+        const previewWindow = window.open("", "_blank");
+        previewWindow.document.write(`
+            <html>
+            <head>
+                <style>${template.css_code}</style>
+            </head>
+            <body>
+                ${template.html_code}
+            </body>
+            </html>
+        `);
+        previewWindow.document.close();
+    };
+    
+
     if(a==10){
         return (
             <div className="templates-container">
@@ -132,9 +149,21 @@ function Build_project() {
                         <iframe 
                             title={`template-${index}`} 
                             className="template-iframe"
-                            srcDoc={template.html_code} // Directly insert HTML
+                            srcDoc={`
+                                <html>
+                                <head>
+                                    <style>${template.css_code}</style>
+                                </head>
+                                <body>
+                                    ${template.html_code}
+                                </body>
+                                </html>
+                            `} 
                         />
-                        <button onClick={()=>handleTemplateClick(template)}>SELECT</button>
+                        <div className="buttons-container">
+            <button onClick={() => handleTemplateClick(template)}>SELECT</button>
+            <button onClick={() => previewTemplate(template)}>PREVIEW</button>
+        </div>
                     </div>
                 ))}
                 </div>
