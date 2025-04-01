@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Uploadwidget from "./uploadwidjet";
 import './templates.css';
 import CircularProgress from "@mui/material/CircularProgress";
-function T({b}) {
+function T() {
     let [load, set_load] = useState(0);
     let [css_code, set_css_code] = useState(null);
     let [html_code, set_html_code] = useState(null);
@@ -29,7 +29,7 @@ function T({b}) {
         return (
             <div className="success-message">
                 <p className="success-text">✅ Uploaded Successfully!</p>
-                <button className="go-home-btn" onClick={() => { b() }}>🏠 Go Home</button>
+                
             </div>
         );
         

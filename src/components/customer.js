@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { CircularProgress} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Html_contribute from "./html_contribute";
+import T from "./template";
 function CustomerPage() {
     let navigate = useNavigate();
     let [user, setUser] = useState(null);
@@ -251,11 +252,11 @@ function CustomerPage() {
                         {user.email}
                     </Typography>
                     <List>
-                        <ListItem button>
-                            <ListItemText primary="History" />
+                    <ListItem button>
+                            <ListItemText primary="Contribute Component"  onClick={()=>{set_contribute_state(1)}}/>
                         </ListItem>
                         <ListItem button>
-                            <ListItemText primary="Account Details" />
+                            <ListItemText primary="Contribute Template" onClick={()=>{set_contribute_state(2)}} />
                         </ListItem>
                         <ListItem button>
                             <ListItemText primary="Settings" />
