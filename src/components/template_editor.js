@@ -305,7 +305,7 @@ const Template_editor = ({pagename,b, t}) => {
                 }
               });
 
-              function addImagesToEditor() {
+              /*function addImagesToEditor() {
                 // Loop through the array of image URLs
                 t.url.forEach((url) => {
                   // Check if the image URL already exists in the editor (avoid duplication)
@@ -325,7 +325,7 @@ const Template_editor = ({pagename,b, t}) => {
                 });
               }
               // Step 5: Call the function to add images to the editor
-              addImagesToEditor();
+              addImagesToEditor();*/
               
 
              
