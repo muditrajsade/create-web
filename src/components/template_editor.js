@@ -22,6 +22,7 @@ const Template_editor = ({pagename,b, t}) => {
     let [isEditorReady, setIsEditorReady] = useState(false);
     const [selectedColor, setSelectedColor] = useState("#ffffff");
     let [img_var,set_img_var] = useState([]);
+    //let [resiszable_divs,set_resizable_divs] = useState(3);
 
     
 
@@ -145,46 +146,11 @@ const Template_editor = ({pagename,b, t}) => {
                 
                 blockManager: { appendTo: "#blocks-panel" },
                 dragMode: "absolute",
-                /*assetManager: {
-                    upload: "http://localhost:5000/upload", // Replace with your backend
-                    uploadName: "files",
-                    assets: [
-                      { src: "https://via.placeholder.com/150", type: "image" }, // Example image
-                    ],
-                    autoAdd: true, // Automatically add uploaded images
-                  },*/
-
-                 /* assetManager: {
-                    upload: 'http://localhost:3000/upload', // Your backend API
-                    uploadName: 'file', // Name of the file field (must match Multer's 'file')
-                    credentials: 'include', // Optional: If using authentication
-                    autoAdd: true, // Automatically adds uploaded images to assets
-                    headers: { 
-                      // Add any required headers here
-                    },
-                    // Handle response to match GrapesJS Asset Manager format
-                    uploadFile: function (e) {
-                      const files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
-                      const formData = new FormData();
-                      
-                      // Append only the first selected file
-                      if (files.length) {
-                        formData.append('file', files[0]); 
-                      }
                 
-                      fetch('http://localhost:8000/upload', {
-                        method: 'POST',
-                        body: formData
-                      })
-                      .then(res => res.json())
-                      .then(data => {
-                        if (data.data) {
-                          editor.AssetManager.add(data.data); // Adds images to Asset Manager
-                        }
-                      })
-                      .catch(err => console.error('Upload error:', err));
-                    }
-                  }*/
+                
+                  
+
+                    
 
                   
 
@@ -223,16 +189,7 @@ const Template_editor = ({pagename,b, t}) => {
             let styleManager = editor.StyleManager;
 
 
-            /*const animationCSS = `
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateX(-100px); } to { transform: translateX(0); } }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        .fade-in { animation: fadeIn 1s ease-in-out; }
-        .slide-in { animation: slideIn 1.5s ease-in-out; }
-        .bounce { animation: bounce 1.5s infinite; }
-      `;
-            editor.setStyle(animationCSS);*/
+            
 
             styleManager.addSector("animations", {
                 name: "Animations",
@@ -310,28 +267,48 @@ const Template_editor = ({pagename,b, t}) => {
                 }
               });
 
-              /*function addImagesToEditor() {
-                // Loop through the array of image URLs
-                t.url.forEach((url) => {
-                  // Check if the image URL already exists in the editor (avoid duplication)
-                  const existingComponent = editor.getComponents().models.find(component => {
-                    const src = component.get('attributes').src;
-                    return src === url;
-                  });
+              //div addition
+
+              editor.DomComponents.addType('resizable-div', {
+                extend: 'default',
+                isComponent: el => el.tagName === 'DIV',
+                model: {
+                  defaults: {
+                    tagName: 'div',
+                    resizable: {
+                      tl: 1, tr: 1, bl: 1, br: 1,
+                      cl: 1, cr: 1, tc: 1, bc: 1,
+                      keyWidth: 'width',
+                      keyHeight: 'height',
+                      currentUnit: 'px',
+                      minDim: 50,
+                    },
+                    draggable: true,
+                    droppable: true,
+                    selectable: true,
+                    highlightable: true,
+                    style: {
+                      width: '300px',
+                      height: '200px',
+                      border: '2px dashed #ccc',
+                      backgroundColor: '#f9f9f9',
+                      position: 'relative',
+                    },
+                  },
+                },
+              });
               
-                  // Only add the image if it's not already added
-                  if (!existingComponent) {
-                    // Add an image component to the editor
-                    editor.addComponents({
-                      type: 'image',
-                      src: url  // Dynamically assign the src to each image
-                    });
-                  }
-                });
-              }
-              // Step 5: Call the function to add images to the editor
-              addImagesToEditor();*/
               
+              //div tag
+
+              
+              
+
+              
+              
+              
+
+             
 
              
           
@@ -339,6 +316,7 @@ const Template_editor = ({pagename,b, t}) => {
         
 
             editor.DomComponents.addType("custom-div", {
+              
                 model: {
                   defaults: {
                     tagName: "div",
@@ -372,23 +350,7 @@ const Template_editor = ({pagename,b, t}) => {
                 attributes: { title: "Get HTML & CSS" },
             });
 
-            /*editor.Panels.addButton('options', {
-                id: 'upload-btn',
-                className: 'fa fa-upload', // Icon of the button
-                command: 'open-cloudinary', // Command to open the Asset Manager
-                attributes: { title: 'Open Asset Manager' },
-              });
-
-              //cloudinary  stuff
-
-              editor.Commands.add("open-cloudinary", {
-                run: () => openCloudinaryWidget(editor),
-              });*/
-
             
-
-            
-              
 
             editor.Panels.addButton("options", {
                 id: "color-picker",
@@ -400,23 +362,7 @@ const Template_editor = ({pagename,b, t}) => {
                 command: "open-color-picker",
             });
 
-            /*editor.Panels.addButton('options', { 
-                id: 'open-assets-btn',
-                className: 'fa fa-image',
-                command: 'open-assets',
-                attributes: { title: 'View Uploaded Images' },
-              });
-              
-              editor.Commands.add('open-assets', {
-                run: (editor) => {
-                  const assets = editor.AssetManager.getAll(); // Get current assets
-                  if (!assets.length) {
-                    alert("No images uploaded yet!"); // Handle empty state
-                  } else {
-                    editor.runCommand('open-assets'); // Open Asset Manager
-                  }
-                }
-              });*/
+            
               
 
             editor.Commands.add("open-color-picker", {
@@ -452,33 +398,7 @@ const Template_editor = ({pagename,b, t}) => {
                 },
             });
 
-            // Add a button to open the Asset Manager
-/*editor.Panels.addButton('options', { 
-    id: 'open-assets-btn',
-    className: 'fa fa-image',
-    command: 'open-assets',
-    attributes: { title: 'View Uploaded Images' },
-  });
-  
-  // Command to open Asset Manager and ensure images are visible
-  editor.Commands.add('open-assets', {
-    run: function (editor) {
-      const assetManager = editor.AssetManager;
-  
-      // Force opening the Asset Manager
-      assetManager.open();
-  
-      // Focus on the images tab if GrapesJS supports categories (some versions do)
-      if (assetManager.getCategories) {
-        const imagesCategory = assetManager.getCategories().filter(cat => cat.get('id') === 'images')[0];
-        if (imagesCategory) {
-          assetManager.setTargetCategory(imagesCategory);
-        }
-      }
-  
-      console.log("Opened Asset Manager with uploaded images");
-    }
-  });*/
+           
   
     
 
@@ -762,14 +682,24 @@ const Template_editor = ({pagename,b, t}) => {
             }
 
             
-
+            
+            
+            
+            
+            
 
             
             
 
             setIsEditorReady(true);
+            
         }
     }, [loading, buttonsData, collapse_comp,nav_bar,button_group,card,dropdown,listgrp,alert_comp,badge]);
+
+    
+    
+
+    
 
    
 
@@ -782,6 +712,8 @@ const Template_editor = ({pagename,b, t}) => {
             setSelectedColor(e.target.value);
         }
     };
+
+    
 
     return (
         <div style={{ display: "flex" }}>
