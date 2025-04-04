@@ -159,6 +159,21 @@ const Template_editor = ({pagename,b, t}) => {
                 
             });
 
+            editor.Components.addType('div', {
+                isComponent: el => el.tagName === 'DIV',
+                extend: 'default',
+                model: {
+                  defaults: {
+                    tagName: 'div',
+                    draggable: true,
+                    droppable: true,
+                    resizable: true,
+                    name: 'Div', // This sets the label shown in the component panel!
+                  }
+                }
+              });
+              
+
             
 
             const mergedCSS = `${t.css_code} 
@@ -174,6 +189,65 @@ const Template_editor = ({pagename,b, t}) => {
             editor.setComponents(t.html_code);
     
             editor.setStyle(mergedCSS);
+
+            function makeComponentResizable(component) {
+                const tagName = component.get('tagName');
+              
+                if (!component || !component.set) return;
+              
+                // Always reset before applying
+                component.set('resizable', true); // force refresh/resizer UI
+              
+                if (['div', 'nav'].includes(tagName)) {
+                  component.set('resizable', {
+                    tl: 1, tc: 1, tr: 1,
+                    cl: 1, cr: 1,
+                    bl: 1, bc: 1, br: 1,
+                    keyWidth: 'width',
+                    keyHeight: 'height',
+                    currentUnit: 'px',
+                    minDim: 30,
+                    maxDim: 2000,
+                  });
+                } else if (['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span'].includes(tagName)) {
+                  component.set('resizable', {
+                    tl: 1, tr: 1, bl: 1, br: 1,
+                    keyHeight: 'font-size',
+                    currentUnit: 'px',
+                    minDim: 10,
+                    maxDim: 200,
+                  });
+                }
+              }
+              
+
+              editor.on('load', () => {
+                const wrapper = editor.getWrapper();
+                const allComponents = wrapper.find('*'); // Find all components inside wrapper
+              
+                allComponents.forEach(comp => {
+                  // 🛠 Fix: if a <div> is wrongly detected as type 'text', correct it
+                  if (comp.get('tagName') === 'div' && comp.get('type') === 'text') {
+                    comp.set('type', 'default'); // GrapesJS's internal name for div
+                    comp.set('tagName', 'div');; // Correct the type to div
+                  }
+              
+                  makeComponentResizable(comp); // Apply resizability
+                });
+              
+                // For dynamically added components
+                editor.on('component:add', (component) => {
+                  makeComponentResizable(component);
+                });
+              
+                // When user selects a component, ensure it's resizable again
+                editor.on('component:selected', (component) => {
+                  makeComponentResizable(component);
+                });
+              });
+              
+              
+              
 
             editor.getWrapper().set('style', {
                 height: '100%',
