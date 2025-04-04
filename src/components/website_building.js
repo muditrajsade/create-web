@@ -20,7 +20,7 @@ function Build_project() {
     const location = useLocation();
     const [user, setuser] = useState("");
     let [templates,set_templates] = useState([]);
-    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    //const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [showModal, setShowModal] = useState(false);
     let [templ,set_templ] = useState(null);
 
@@ -33,13 +33,15 @@ function Build_project() {
     }, [location]);
 
     let func = (html, css) => {
-        set_a(0);
+        
         let iimnb = [...received_htnl];
         iimnb[current_pg] = html;
         let cssil = [...received_css];
         cssil[current_pg] = css;
+        set_a(0);
         set_received_html([...iimnb]);
         set_css([...cssil]);
+        set_current_pg(current_pg+1);
     };
 
     const handleTemplateClick = (template) => {
