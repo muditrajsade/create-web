@@ -24,9 +24,16 @@ const Template_editor = ({pagename,b, t}) => {
     let [img_var,set_img_var] = useState([]);
     //let [resiszable_divs,set_resizable_divs] = useState(3);
 
+    let [js,set_js] = useState("<script>");
+    const jsRef = useRef(js);
+
     
 
     const [webpageCode, setWebpageCode] = useState({ html: "", css: "" });
+
+    useEffect(() => {
+      jsRef.current = js;
+    }, [js]);
 
 
     
@@ -424,6 +431,44 @@ const Template_editor = ({pagename,b, t}) => {
                 attributes: { title: "Get HTML & CSS" },
             });
 
+            //java script
+
+            editor.Panels.addButton('options', {
+              id: 'add-js-to-component',
+              className: 'fa fa-code', // or any icon you want
+              command: 'add-js-script',
+              attributes: { title: 'Add JavaScript' }
+            });
+
+            editor.Commands.add('add-js-script', {
+              run(editor) {
+                const selected = editor.getSelected();
+            
+                if (!selected) {
+                  alert('Please select a component first.');
+                  return;
+                }
+                
+            
+                // Optional: get unique ID if needed
+                const componentId = selected.getId();
+                console.log("jjk");
+                // 💡 Make sure to wrap the ID with quotes properly
+                const jsCode = js+`
+                  document.querySelector("#${componentId}").addEventListener("click", function() {
+                    this.style.backgroundColor = "yellow";
+                    this.innerText = "Clicked and changed!";
+                  });
+                `;
+            
+                // Set this into your React state
+                set_js(jsCode);
+            
+                // Your JavaScript code as string
+                
+              }
+            });
+
             
 
             editor.Panels.addButton("options", {
@@ -482,7 +527,9 @@ const Template_editor = ({pagename,b, t}) => {
             
             editor.Commands.add("get-html-css", {
                 run: (editor) => {
-                    b(editorRef.current.getHtml(),editorRef.current.getCss());
+                  
+                  let afsr = jsRef.current + "</script>";
+                    b(editorRef.current.getHtml(),editorRef.current.getCss(),afsr);
                 },
             });
 

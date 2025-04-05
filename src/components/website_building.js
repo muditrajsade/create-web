@@ -17,6 +17,7 @@ function Build_project() {
     let [current_pg, set_current_pg] = useState(0);
     let [received_htnl, set_received_html] = useState([]);
     let [received_css, set_css] = useState([]);
+    let [receivedjs,set_receivedjs] = useState([]);
     const location = useLocation();
     const [user, setuser] = useState("");
     let [templates,set_templates] = useState([]);
@@ -32,15 +33,18 @@ function Build_project() {
         }
     }, [location]);
 
-    let func = (html, css) => {
+    let func = (html, css,js) => {
         
         let iimnb = [...received_htnl];
         iimnb[current_pg] = html;
         let cssil = [...received_css];
         cssil[current_pg] = css;
+        let tthfad = [...receivedjs];
+        tthfad[current_pg] = js;
         set_a(0);
         set_received_html([...iimnb]);
         set_css([...cssil]);
+        set_receivedjs([...tthfad]);
         set_current_pg(current_pg+1);
     };
 
@@ -66,6 +70,7 @@ function Build_project() {
         pages.forEach((pageName, index) => {
             const htmlContent = received_htnl[index] || "";
             const cssContent = received_css[index] || "";
+            const jscontent = receivedjs[index] || "";
 
             const bootstrapCSS = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">`;
             const bootstrapJS = `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>`;
@@ -81,6 +86,7 @@ function Build_project() {
                 <body>
                   ${htmlContent}
                   ${bootstrapJS}
+                ${jscontent}
                 </body>
               </html>
             `;
