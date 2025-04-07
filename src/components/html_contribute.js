@@ -14,7 +14,7 @@ function Html_contribute({f}) {
 
     const bootstrapComponents = [
         "Buttons", "Carousel", "Navbar", "Accordion", "Alerts", 
-        "Button Group", "Card", "Dropdowns", "Badge", "List Group", "Collapse"
+        "Button Group", "Card", "Dropdowns", "Badge", "List Group", "Collapse","form","inputs"
     ];
 
     let upload = async () => {

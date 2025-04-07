@@ -18,6 +18,8 @@ const Template_editor = ({pagename,b, t}) => {
     let [listgrp,set_listgrp] = useState([]);
     let [alert_comp,set_alert] = useState([]);
     let [badge,set_badge] = useState([]);
+    let [forms,set_forms] = useState([]);
+    let [inputs,set_inputs] = useState([]);
     let [templates,set_templates] = useState([]);
     let [isEditorReady, setIsEditorReady] = useState(false);
     const [selectedColor, setSelectedColor] = useState("#ffffff");
@@ -40,7 +42,7 @@ const Template_editor = ({pagename,b, t}) => {
     useEffect(() => {
         const fetchComponents = async () => {
             try {
-                let [buttonsResponse, collapseresponse,nav_bar_response,button_group_response,cardresponse,dropdownresponse,listgrpresponse,alertresponse,badgeresponse] = await Promise.all([
+                let [buttonsResponse, collapseresponse,nav_bar_response,button_group_response,cardresponse,dropdownresponse,listgrpresponse,alertresponse,badgeresponse,formsresponse,inputresponse] = await Promise.all([
                     fetch("http://localhost:8000/fetch_all_buttons", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -77,6 +79,14 @@ const Template_editor = ({pagename,b, t}) => {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                     }),
+                    fetch("http://localhost:8000/fetch_all_forms", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                  }),
+                  fetch("http://localhost:8000/fetch_all_inputs", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                }),
                     
 
 
@@ -91,6 +101,8 @@ const Template_editor = ({pagename,b, t}) => {
                 let listgrpdata = await listgrpresponse.json();
                 let alertdata = await alertresponse.json();
                 let badgedata = await badgeresponse.json();
+                let formsdata = await formsresponse.json();
+                let inputdata = await inputresponse.json();
                 
                 
 
@@ -103,6 +115,8 @@ const Template_editor = ({pagename,b, t}) => {
                 set_listgrp([...listgrpdata.data]);
                 set_alert([...alertdata.data]);
                 set_badge([...badgedata.data]);
+                set_forms([...formsdata.data]);
+                set_inputs([...inputdata.data]);
                 
 
             } catch (error) {
@@ -116,7 +130,7 @@ const Template_editor = ({pagename,b, t}) => {
 
 
     useEffect(() => {
-        if (!loading && buttonsData.length > 0 && collapse_comp.length > 0 && nav_bar.length> 0 && button_group.length>0 && card.length>0 && dropdown.length>0 && listgrp.length>0 && alert_comp.length>0 && badge.length>0 &&  !editorRef.current) {
+        if (!loading && buttonsData.length > 0 && collapse_comp.length > 0 && nav_bar.length> 0 && button_group.length>0 && card.length>0 && dropdown.length>0 && listgrp.length>0 && alert_comp.length>0 && badge.length>0 && forms.length>0 && inputs.length>0 &&  !editorRef.current) {
             const editor = grapesjs.init({
                 container: "#gjs",
                 fromElement: false,
@@ -179,6 +193,59 @@ const Template_editor = ({pagename,b, t}) => {
                   }
                 }
               });
+
+              /*editor.DomComponents.addType('resizable-wrapper', {
+                model: {
+                  defaults: {
+                    tagName: 'div',
+                    attributes: { class: 'resizable-form-wrapper' },
+                    stylable: ['width', 'height', 'min-width', 'min-height'],
+                    style: {
+                      width: '300px',
+                      minHeight: '200px',
+                      padding: '10px',
+                      border: '1px solid #ccc',
+                      boxSizing: 'border-box',
+                    },
+                    resizable: {
+                      tl: 1, tc: 1, tr: 1,
+                      cl: 1, cr: 1,
+                      bl: 1, bc: 1, br: 1,
+                      keyWidth: 'width',
+                      keyHeight: 'height',
+                      currentUnit: 'px',
+                      minDim: 50,
+                    },
+                  }
+                }
+              });
+              
+
+              editor.BlockManager.add('resizable-form', {
+                label: 'Resizable Form',
+                category: 'Forms',
+                content: {
+                  type: 'resizable-wrapper',
+                  components: [
+                    {
+                      tagName: 'form',
+                      attributes: { class: 'form-container' },
+                      components: [
+                        { tagName: 'input', attributes: { placeholder: 'Name' }},
+                        { tagName: 'input', attributes: { type: 'email', placeholder: 'Email' }},
+                        { tagName: 'button', content: 'Submit' }
+                      ],
+                      style: {
+                        width: '100%',
+                        height: '100%',
+                        boxSizing: 'border-box',
+                      }
+                    }
+                  ]
+                }
+              });*/
+              
+              
               
 
             
@@ -435,11 +502,11 @@ const Template_editor = ({pagename,b, t}) => {
 
             editor.Panels.addButton('options', {
               id: 'add-js-to-component',
-              className: 'fa fa-code', // or any icon you want
+              className: 'fa fa-code',
               command: 'add-js-script',
               attributes: { title: 'Add JavaScript' }
             });
-
+            
             editor.Commands.add('add-js-script', {
               run(editor) {
                 const selected = editor.getSelected();
@@ -448,26 +515,174 @@ const Template_editor = ({pagename,b, t}) => {
                   alert('Please select a component first.');
                   return;
                 }
-                
             
-                // Optional: get unique ID if needed
                 const componentId = selected.getId();
-                console.log("jjk");
-                // 💡 Make sure to wrap the ID with quotes properly
-                const jsCode = js+`
-                  document.querySelector("#${componentId}").addEventListener("click", function() {
-                    this.style.backgroundColor = "yellow";
-                    this.innerText = "Clicked and changed!";
-                  });
+            
+                // Create modal form
+                const modal = editor.Modal;
+                const content = document.createElement('div');
+                content.innerHTML = `
+                  <label>Alert Message: <input type="text" id="alertMessage" placeholder="Enter alert message" /></label><br><br>
+                  <label>Background Color (optional): <input type="color" id="bgColor" /></label><br><br>
+                  <button id="applyJS">Apply JS</button>
                 `;
             
-                // Set this into your React state
-                set_js(jsCode);
+                modal.setTitle('Custom JS Settings');
+                modal.setContent(content);
+                modal.open();
             
-                // Your JavaScript code as string
-                
+                document.getElementById('applyJS').onclick = () => {
+                  const alertMsg = document.getElementById('alertMessage').value;
+                  const bgColor = document.getElementById('bgColor').value;
+            
+                  let jsCode = `
+                    document.querySelector("#${componentId}").addEventListener("click", function() {
+                      ${alertMsg ? `alert(${JSON.stringify(alertMsg)});` : ''}
+                      ${bgColor ? `this.style.backgroundColor = "${bgColor}";` : ''}
+                    });
+                  `;
+            
+                  // You can now pass this JS to your state function
+                  set_js(js + jsCode); // `js` prefix if you need it concatenated
+            
+                  modal.close();
+                };
               }
             });
+            
+
+
+            //input fields validation
+
+            editor.Panels.addButton('options', [{
+              id: 'open-validation-panel',
+              className: 'fa fa-cog',
+              command: 'open-validation-panel',
+              attributes: { title: 'Input Validations' }
+            }]);
+            
+            editor.Commands.add('open-validation-panel', {
+              run(editor) {
+                const modal = editor.Modal;
+                const selected = editor.getSelected();
+            
+                // Ensure an <input> is selected
+                if (!selected || selected.get('tagName') !== 'input') {
+                  alert('Select an input field first.');
+                  return;
+                }
+            
+                const componentId = selected.getId() || `comp-${Date.now()}`;
+                if (!selected.getId()) selected.setId(componentId);
+            
+                // Modal content
+                const content = document.createElement('div');
+                content.innerHTML = `
+                  <label><input type="checkbox" id="onlyNumbers"> Only Numbers</label><br>
+                  <label><input type="checkbox" id="onlyChars"> Only Characters</label><br>
+                  <label><input type="checkbox" id="specialChar"> At least one Special Character</label><br>
+                  <label>Min Length: <input type="number" id="minLength" min="0" style="width: 50px;"></label><br>
+                  <label>Max Length: <input type="number" id="maxLength" min="1" style="width: 50px;"></label><br><br>
+                  <button id="applyValidation">Apply</button>
+                `;
+            
+                modal.setTitle('Validation Options');
+                modal.setContent(content);
+                modal.open();
+            
+                // On apply
+                document.getElementById('applyValidation').onclick = () => {
+                  const onlyNumbers = document.getElementById('onlyNumbers').checked;
+                  const onlyChars = document.getElementById('onlyChars').checked;
+                  const specialChar = document.getElementById('specialChar').checked;
+                  const minLength = document.getElementById('minLength').value;
+                  const maxLength = document.getElementById('maxLength').value;
+            
+                  // Clear previous validation attributes
+                  selected.removeAttributes(['pattern', 'minlength', 'maxlength', 'title']);
+            
+                  // Construct pattern
+                  /*let pattern = '';
+                  let title = [];
+            
+                  if (onlyNumbers) {
+                    pattern = '^\\d+$';
+                    title.push('Only numbers');
+                  } else if (onlyChars) {
+                    pattern = '^[A-Za-z]+$';
+                    title.push('Only characters');
+                  }
+            
+                  if (specialChar) {
+                    pattern = pattern ? `(?=${pattern})(?=.*[!@#$%^&*])` : '.*[!@#$%^&*].*';
+                    title.push('At least one special character');
+                  }
+            
+                  if (pattern) {
+                    selected.addAttributes({ pattern, title: title.join(', ') });
+                  }
+            
+                  if (minLength) selected.addAttributes({ minlength: minLength });
+                  if (maxLength) selected.addAttributes({ maxlength: maxLength });*/
+
+                  const jsValidationCode = js+`
+  const input = document.querySelector("#${componentId}");
+  input.addEventListener("input", function() {
+    const value = this.value;
+    let isValid = true;
+    let errorMsg = "";
+
+    ${onlyNumbers ? `
+      if (!/^\\d+$/.test(value)) {
+        isValid = false;
+        errorMsg += "Only numbers allowed.\\n";
+      }
+    ` : ''}
+
+    ${onlyChars ? `
+      if (!/^[A-Za-z]+$/.test(value)) {
+        isValid = false;
+        errorMsg += "Only characters allowed.\\n";
+      }
+    ` : ''}
+
+    ${specialChar ? `
+      if (!/[!@#$%^&*]/.test(value)) {
+        isValid = false;
+        errorMsg += "Must include a special character.\\n";
+      }
+    ` : ''}
+
+    ${minLength ? `
+      if (value.length < ${minLength}) {
+        isValid = false;
+        errorMsg += "Minimum length is ${minLength}.\\n";
+      }
+    ` : ''}
+
+    ${maxLength ? `
+      if (value.length > ${maxLength}) {
+        isValid = false;
+        errorMsg += "Maximum length is ${maxLength}.\\n";
+      }
+    ` : ''}
+
+    if (!isValid) {
+      alert(errorMsg);
+    } 
+  });
+`;
+
+                  set_js(jsValidationCode); 
+
+            
+                  modal.close();
+                };
+              }
+            });
+            
+            
+            
 
             
 
@@ -617,6 +832,95 @@ const Template_editor = ({pagename,b, t}) => {
                 });
             }
 
+
+            if (!existingCategories.has("Buttons")) {
+              forms.forEach((button) => {
+                  if (!blockManager.get(button.id)) {
+                      blockManager.add(button.id, {
+                          label: `<div style="padding:20px;">${button.html_code}</div>`,
+                          category: "Forms",
+                          content: {
+                              type: "Form", 
+                              components: button.html_code,
+                              styles: button.css_code,
+                              draggable: true,
+                              selectable: true,
+                              copyable: true,
+                              attributes: { class: "gjs-no-select" }, 
+                              removable: true, 
+                              stylable: true, 
+                              resizable:false,
+
+                          },
+                          wrapper: true, 
+                      });
+                  }
+              });
+          }
+
+          
+
+            /*if (!existingCategories.has("Forms")) {
+              forms.forEach((button) => {
+                if (!blockManager.get(button.id)) {
+                  blockManager.add(button.id, {
+                    label: `<div style="padding:20px;">${button.html_code}</div>`,
+                    category: "Forms",
+                    content: {
+                      type: 'default',
+                      components: [
+                        {
+                          tagName: 'div',
+                          attributes: { class: 'resizable-form-wrapper' },
+                          style: {
+                            width: '300px',
+                            height: '300px', // ✅ Set explicit height
+                            padding: '10px',
+                            border: '1px solid #ccc',
+                            boxSizing: 'border-box',
+                          },
+                          resizable: {
+                            tl: 1, tc: 1, tr: 1,
+                            cl: 1, cr: 1,
+                            bl: 1, bc: 1, br: 1, // ✅ All corners/edges enabled
+                            keyWidth: 'width',
+                            keyHeight: 'height',
+                            currentUnit: 'px',
+                            minDim: 50,
+                          },
+                          stylable: ['width', 'height', 'min-height', 'min-width'],
+                          components: [
+                            {
+                              type: 'text',
+                              content: button.html_code,
+                              style: {
+                                width: '100%',
+                                height: '100%',
+                                boxSizing: 'border-box',
+                              },
+                            },
+                          ],
+                        },
+                      ],
+                      styles: button.css_code,
+                      draggable: true,
+                      selectable: true,
+                      copyable: true,
+                      attributes: { class: "gjs-no-select" },
+                      removable: true,
+                      stylable: true,
+                    },
+                    wrapper: true,
+                  });
+                }
+              });
+            }*/
+
+              
+              
+              
+            
+            
             
 
             
@@ -642,6 +946,30 @@ const Template_editor = ({pagename,b, t}) => {
                     }
                 });
             }
+
+
+            if (!existingCategories.has("inputs")) {
+              inputs.forEach((card) => {
+                  if (!blockManager.get(card.id)) {
+                      blockManager.add(card.id, {
+                          label: `<div style="padding:5px;">${card.html_code}</div>`,
+                          category: "Input",
+                          content: {
+                              type: "input", 
+                              components: card.html_code, 
+                              styles: card.css_code,
+                              draggable: true,
+                              selectable: true,
+                              copyable: true,
+                              attributes: { class: "gjs-no-select" }, 
+                              removable: true, 
+                              stylable: true, 
+                          },
+                          wrapper: true, 
+                      });
+                  }
+              });
+          }
             if (!existingCategories.has("Navbar")) {
                 nav_bar.forEach((card) => {
                     if (!blockManager.get(card.id)) {
