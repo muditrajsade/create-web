@@ -287,6 +287,7 @@ function Build_project() {
                     <Button variant="outlined" color="secondary" onClick={() => {
                         const htmlContent = received_htnl[v] || "";
                         const cssContent = received_css[v] || "";
+                        const jscontent = receivedjs[index] || "";
                         const bootstrapCSS = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">`;
                         const bootstrapJS = `<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>`;
 
@@ -301,6 +302,7 @@ function Build_project() {
                             <body>
                               ${htmlContent}
                               ${bootstrapJS}
+                              ${jscontent}
                             </body>
                           </html>
                         `;
