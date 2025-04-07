@@ -535,15 +535,18 @@ const Template_editor = ({pagename,b, t}) => {
                   const alertMsg = document.getElementById('alertMessage').value;
                   const bgColor = document.getElementById('bgColor').value;
             
-                  let jsCode = `
+                  let jsCode =  `
                     document.querySelector("#${componentId}").addEventListener("click", function() {
                       ${alertMsg ? `alert(${JSON.stringify(alertMsg)});` : ''}
                       ${bgColor ? `this.style.backgroundColor = "${bgColor}";` : ''}
                     });
                   `;
-            
+
+                  jsRef.current += jsCode;
+                  set_js(jsRef.current);
+
                   // You can now pass this JS to your state function
-                  set_js(js + jsCode); // `js` prefix if you need it concatenated
+                   // `js` prefix if you need it concatenated
             
                   modal.close();
                 };
@@ -625,9 +628,10 @@ const Template_editor = ({pagename,b, t}) => {
                   if (minLength) selected.addAttributes({ minlength: minLength });
                   if (maxLength) selected.addAttributes({ maxlength: maxLength });*/
 
-                  const jsValidationCode = js+`
-  const input = document.querySelector("#${componentId}");
-  input.addEventListener("input", function() {
+                  console.log(componentId);
+
+                  let jsValidationCode = `
+  document.querySelector("#${componentId}").addEventListener("change", function() {
     const value = this.value;
     let isValid = true;
     let errorMsg = "";
@@ -672,8 +676,10 @@ const Template_editor = ({pagename,b, t}) => {
     } 
   });
 `;
+                  jsRef.current += jsValidationCode;
+                  set_js(jsRef.current);
 
-                  set_js(jsValidationCode); 
+                  
 
             
                   modal.close();
